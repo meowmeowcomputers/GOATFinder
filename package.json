@@ -1,0 +1,27 @@
+{
+  "name": "goatfinder",
+  "version": "1.0.0",
+  "description": "App to determine who is the greatest player for a team during a given time period",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/meowmeowcomputers/GOATFinder.git"
+  },
+  "author": "Ryan Leon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/meowmeowcomputers/GOATFinder/issues"
+  },
+  "homepage": "https://github.com/meowmeowcomputers/GOATFinder#readme",
+  "dependencies": {
+    "axios": "^0.16.2",
+    "bluebird": "^3.5.0",
+    "express": "^4.15.3",
+    "handlebars": "^4.0.10",
+    "hbs": "^4.0.1",
+    "pg-promise": "^6.3.5"
+  }
+}
