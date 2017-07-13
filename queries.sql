@@ -23,42 +23,56 @@ SELECT fullnames.namefirst, fullnames.namelast, avghr.avghomer
  	ON fullnames.idall = avghr.idavg
   GROUP BY fullnames.namefirst, fullnames.namelast, avghr.avghomer
   ORDER BY avghomer DESC;
---Query the top homers averages of a given range by position INCOMPLETE, positions are numerous.
-        --Attempting to aggregate out just the most often occurring position in a player's career
-  SELECT fullnames.namefirst, fullnames.namelast, avghr.avghomer
-  	FROM
-  		(SELECT
-    			baseball.batting.playerid as idall,
-    			baseball.master.namefirst,
-    			baseball.master.namelast,
-          baseball.fielding.pos as pos
-    		FROM baseball.batting
-    		JOIN baseball.master
-    		  ON baseball.master.playerid = baseball.batting.playerid
-    		WHERE baseball.batting.yearid >= 1871
-    		AND baseball.batting.yearid <= 2016)
-    		as fullnames
-    	JOIN
-    		(SELECT
-  	  		avg(baseball.batting.hr) as avghomer,
-  	  		baseball.batting.playerid as idavg
-  				FROM baseball.batting
- 		      GROUP BY idavg)
-   		   as avghr
-   	  ON fullnames.idall = avghr.idavg
-      JOIN (SELECT pos, COUNT(pos) as position_occurence, playerid
-        FROM baseball.fielding
-        GROUP BY pos, playerid
-        ORDER BY position_occurence DESC
-        LIMIT 1)
-        as position
-      ON baseball.batting.playerid = position.playerid
-
-    GROUP BY fullnames.namefirst, fullnames.namelast, avghr.avghomer
-    ORDER BY avghomer DESC;
+--Query the top homers averages of a given year range by position
+        SELECT fullnames.namefirst, fullnames.namelast, avghr.avghomer, position.pos
+        	FROM
+          --Get player full names from master table
+        		(SELECT
+          			baseball.batting.playerid as idall,
+          			baseball.master.namefirst,
+          			baseball.master.namelast
+          		FROM baseball.batting
+          		JOIN baseball.master
+          		  ON baseball.master.playerid = baseball.batting.playerid)
+          		as fullnames
+          --Get homer averages and constrain by year
+          	JOIN
+          		(SELECT
+        	  		avg(baseball.batting.hr) as avghomer,
+        	  		baseball.batting.playerid as idavg
+        				FROM baseball.batting
+                WHERE baseball.batting.yearid >= 1800
+                AND baseball.batting.yearid <= 2016
+       		      GROUP BY idavg)
+         		   as avghr
+         	  ON fullnames.idall = avghr.idavg
+          --Get primary player positions
+            JOIN (  SELECT poslist.playerid, poslist.pos
+              FROM (  SELECT fielding.pos,
+                sum(fielding.g) AS position_occurence,
+                fielding.playerid
+               FROM baseball.fielding
+              GROUP BY fielding.pos, fielding.playerid
+                )
+                AS poslist
+                LEFT JOIN (  SELECT fielding.pos,
+                sum(fielding.g) AS position_occurence,
+                fielding.playerid
+               FROM baseball.fielding
+              GROUP BY fielding.pos, fielding.playerid
+                 ) AS primarypos
+                ON primarypos.playerid=poslist.playerid AND primarypos.position_occurence >
+                 poslist.position_occurence
+                WHERE primarypos.playerid IS NULL)
+              as position
+           ON avghr.idavg = position.playerid
+      --     WHERE position.pos = ''
+          GROUP BY fullnames.namefirst, fullnames.namelast, avghr.avghomer, position.pos
+          ORDER BY avghomer DESC
+          LIMIT 1000;
 
 --Query players by positions
-  --Get occurence of positions that player has appeared in
+  --Get occurence of positions that player has appeared in (generates view position_occ)
   SELECT fielding.pos,
     count(fielding.pos) AS position_occurence,
     fielding.playerid
@@ -73,18 +87,24 @@ SELECT fullnames.namefirst, fullnames.namelast, avghr.avghomer
 		WHERE primarypos.playerid IS NULL;
   --Aggregate query without view to produce the playerid list and position that they primarily play
   SELECT poslist.playerid, poslist.pos
-  FROM (SELECT fielding.pos,
-      count(fielding.pos) AS position_occurence,
-      fielding.playerid
-     FROM baseball.fielding
-    GROUP BY fielding.pos, fielding.playerid
+  FROM (  SELECT fielding.pos,
+    sum(fielding.g) AS position_occurence,
+    fielding.playerid
+   FROM baseball.fielding
+  GROUP BY fielding.pos, fielding.playerid
     )
     AS poslist
-    LEFT JOIN (SELECT fielding.pos,
-        count(fielding.pos) AS position_occurence,
-        fielding.playerid
-       FROM baseball.fielding
-      GROUP BY fielding.pos, fielding.playerid
+    LEFT JOIN (  SELECT fielding.pos,
+    sum(fielding.g) AS position_occurence,
+    fielding.playerid
+   FROM baseball.fielding
+  GROUP BY fielding.pos, fielding.playerid
      ) AS primarypos
     ON primarypos.playerid=poslist.playerid AND primarypos.position_occurence > poslist.position_occurence
     WHERE primarypos.playerid IS NULL;
+
+--Query the top pitchers
+SELECT  master.namefirst, master.namelast, pitching.*
+  FROM baseball.pitching AS pitching
+  JOIN baseball.master AS master
+  ON master.playerid = pitching.playerid
