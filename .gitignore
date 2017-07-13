@@ -60,9 +60,6 @@ typings/
 # api tokens
 SECRETS.ENV
 
-# database dumps and tools
-*.sql
-
 # node_modules folder
 /node_modules
 
