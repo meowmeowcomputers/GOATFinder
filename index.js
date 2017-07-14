@@ -44,17 +44,63 @@ app.listen(PORT, function () {
 
 
 app.get('/', function (req, resp) {
-  db.query("SELECT fullnames.namefirst, fullnames.namelast, avghr.avghomer, position.pos \
-        	FROM (SELECT baseball.batting.playerid as idall, baseball.master.namefirst, \
-          	baseball.master.namelast FROM baseball.batting JOIN baseball.master \
-          	ON baseball.master.playerid = baseball.batting.playerid) as fullnames \
-          	JOIN (SELECT avg(baseball.batting.hr) as avghomer, baseball.batting.playerid as idavg\
+  resp.render('index.hbs');
+  // db.query(`SELECT fullnames.namefirst, fullnames.namelast, avghr.avghomer, position.pos \
+  //       	FROM (SELECT baseball.batting.playerid as idall, baseball.master.namefirst, \
+  //         	baseball.master.namelast FROM baseball.batting JOIN baseball.master \
+  //         	ON baseball.master.playerid = baseball.batting.playerid) as fullnames \
+  //         	JOIN (SELECT avg(baseball.batting.hr) as avghomer, baseball.batting.playerid as idavg\
+  //           FROM baseball.batting \
+  //               WHERE baseball.batting.yearid >= 1800\
+  //               AND baseball.batting.yearid <= 2016\
+  //      		      GROUP BY idavg)\
+  //        		   as avghr\
+  //        	  ON fullnames.idall = avghr.idavg\
+  //           JOIN (  SELECT poslist.playerid, poslist.pos\
+  //             FROM (  SELECT fielding.pos,\
+  //               sum(fielding.g) AS position_occurence,\
+  //               fielding.playerid\
+  //              FROM baseball.fielding\
+  //             GROUP BY fielding.pos, fielding.playerid\
+  //           )\
+  //               AS poslist\
+  //               LEFT JOIN (  SELECT fielding.pos,\
+  //               sum(fielding.g) AS position_occurence,\
+  //               fielding.playerid\
+  //              FROM baseball.fielding\
+  //             GROUP BY fielding.pos, fielding.playerid\
+  //           ) AS primarypos\
+  //               ON primarypos.playerid=poslist.playerid AND primarypos.position_occurence >\
+  //                poslist.position_occurence\
+  //               WHERE primarypos.playerid IS NULL)\
+  //             as position\
+  //          ON avghr.idavg = position.playerid\
+  //         GROUP BY fullnames.namefirst, fullnames.namelast, avghr.avghomer, position.pos\
+  //         ORDER BY avghomer DESC\
+  //         LIMIT 10;`)
+  //   .then(function(results) {
+  //     for(let x =0; x < results.length; x ++) {
+  //       console.log('Result number '+x+' '+results[x].namelast)
+  //     }
+  //     resp.render('index.hbs', {results:results});
+  //   })
+});
+
+app.post('/submit', function (req, resp) {
+  console.log('Minimum year: '+req.body.min_slider)
+  console.log('Maximum year: '+req.body.max_slider)
+
+  db.query(`SELECT fullnames.namefirst, fullnames.namelast, avghr.avghomer, position.pos \
+          FROM (SELECT baseball.batting.playerid as idall, baseball.master.namefirst, \
+            baseball.master.namelast FROM baseball.batting JOIN baseball.master \
+            ON baseball.master.playerid = baseball.batting.playerid) as fullnames \
+            JOIN (SELECT avg(baseball.batting.hr) as avghomer, baseball.batting.playerid as idavg\
             FROM baseball.batting \
-                WHERE baseball.batting.yearid >= 1800\
-                AND baseball.batting.yearid <= 2016\
-       		      GROUP BY idavg)\
-         		   as avghr\
-         	  ON fullnames.idall = avghr.idavg\
+                WHERE baseball.batting.yearid >= ${req.body.min_slider}\
+                AND baseball.batting.yearid <= ${req.body.max_slider}\
+                GROUP BY idavg)\
+               as avghr\
+            ON fullnames.idall = avghr.idavg\
             JOIN (  SELECT poslist.playerid, poslist.pos\
               FROM (  SELECT fielding.pos,\
                 sum(fielding.g) AS position_occurence,\
@@ -76,11 +122,11 @@ app.get('/', function (req, resp) {
            ON avghr.idavg = position.playerid\
           GROUP BY fullnames.namefirst, fullnames.namelast, avghr.avghomer, position.pos\
           ORDER BY avghomer DESC\
-          LIMIT 10;")
+          LIMIT 10;`)
     .then(function(results) {
       for(let x =0; x < results.length; x ++) {
         console.log('Result number '+x+' '+results[x].namelast)
       }
-      resp.render('index.hbs', {results:results});
+      resp.render('results.hbs', {results: results});
     })
 });
