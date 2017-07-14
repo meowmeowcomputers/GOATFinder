@@ -19,7 +19,9 @@
   "dependencies": {
     "axios": "^0.16.2",
     "bluebird": "^3.5.0",
+    "body-parser": "^1.17.2",
     "express": "^4.15.3",
+    "express-session": "^1.15.3",
     "handlebars": "^4.0.10",
     "hbs": "^4.0.1",
     "pg-promise": "^6.3.5"

@@ -1,0 +1,71 @@
+<head><link href="/static/css/nouislider.css" rel="stylesheet" type="text/css">
+</head>
+<script src="/static/js/nouislider.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+{{#each results}}
+        <div class="col s11">
+          <strong>{{this.namefirst}} {{this.namelast}}</strong>
+
+          <br>
+
+        </div>
+        <div class="col s1">
+          Average homers for year range: {{this.avghomer}}
+          <br>
+          Position: {{this.pos}}
+        </div>
+
+      {{/each}}
+<br><br>
+      		<div class="example">
+      			<div id="html5"></div>
+      			<select id="input-select"></select>
+      			<input type="number" min="1871" max="2016" step="1" id="input-number">
+    <script>
+    var select = document.getElementById('input-select');
+
+    // Append the option elements
+    for ( var i = -20; i <= 40; i++ ){
+
+    	var option = document.createElement("option");
+    		option.text = i;
+    		option.value = i;
+
+    	select.appendChild(option);
+    }
+    </script>
+    <script>
+    var html5Slider = document.getElementById('html5');
+
+    noUiSlider.create(html5Slider, {
+    	start: [ 10, 30 ],
+    	connect: true,
+    	range: {
+    		'min': -20,
+    		'max': 40
+    	}
+    });
+    </script>
+    <script>
+    var inputNumber = document.getElementById('input-number');
+
+    html5Slider.noUiSlider.on('update', function( values, handle ) {
+
+    	var value = values[handle];
+
+    	if ( handle ) {
+    		inputNumber.value = value;
+    	} else {
+    		select.value = Math.round(value);
+    	}
+    });
+
+    select.addEventListener('change', function(){
+    	html5Slider.noUiSlider.set([this.value, null]);
+    });
+
+    inputNumber.addEventListener('change', function(){
+    	html5Slider.noUiSlider.set([null, this.value]);
+    });
+    </script>
