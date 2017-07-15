@@ -87,8 +87,8 @@ app.get('/', function (req, resp) {
 });
 
 app.post('/submit', function (req, resp) {
-  console.log('Minimum year: '+req.body.min_slider)
-  console.log('Maximum year: '+req.body.max_slider)
+  // console.log('Minimum year: '+req.body.min_slider)
+  // console.log('Maximum year: '+req.body.max_slider)
 
   db.query(`SELECT fullnames.namefirst, fullnames.namelast, avghr.avghomer, position.pos \
           FROM (SELECT baseball.batting.playerid as idall, baseball.master.namefirst, \
