@@ -1,5 +1,6 @@
-ALTER TABLE "baseball"."batting" ALTER COLUMN "ibb" USING ibb::bigint SET DATA TYPE bigint;
-
+ALTER TABLE "baseball"."batting" add ibbint bigint;
+;
+UPDATE "baseball"."batting" SET ibbint = CAST(ibb as BIGINT) WHERE ibb is not null;
 
 -- Add batting averages, 4 decimal points
 UPDATE baseball.batting SET avg = CAST(h as FLOAT)/CAST(ab as FLOAT) WHERE ab > 0;
