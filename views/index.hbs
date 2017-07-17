@@ -2,7 +2,9 @@
 </head>
 <script src="/static/js/nouislider.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+{{#if minYear}}
 
+{{/if}}
 {{#each results}}
         <div class="col s11">
           <strong>{{this.namefirst}} {{this.namelast}}</strong>
@@ -17,6 +19,7 @@
         </div>
 
       {{/each}}
+
 <br><br>
   <form action="/submit" method="POST">
       		<div class="example">

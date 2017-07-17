@@ -1,5 +1,45 @@
+ALTER TABLE "baseball"."batting" ALTER COLUMN "ibb" USING ibb::bigint SET DATA TYPE bigint;
+
+
 -- Add batting averages, 4 decimal points
 UPDATE baseball.batting SET avg = CAST(h as FLOAT)/CAST(ab as FLOAT) WHERE ab > 0;
+--Add OPS
+UPDATE baseball.batting
+SET ops =
+(
+	CAST(ab as FLOAT) *
+	(
+		CAST(h as FLOAT)
+		+CAST(bb as FLOAT)
+		+CAST(hbp as FLOAT)
+	) +
+	--TB
+	(
+		CAST(h as FLOAT)
+		+ (CAST("2B" as FLOAT))
+		+(CAST("3B" as FLOAT)*2)
+		+(CAST(hr as FLOAT)*3)
+	) *
+	--Slugging
+	(
+		(CAST(ab as FLOAT)
+		+CAST(hbp as FLOAT)
+		+CAST(bb as FLOAT)
+		+CAST(sf as FLOAT)
+		)
+	)
+)
+/
+(
+	CAST(ab as FLOAT) *
+
+		(CAST(ab as FLOAT)
+		+CAST(hbp as FLOAT)
+		+CAST(bb as FLOAT)
+		+CAST(sf as FLOAT)
+		)
+)
+/CAST(ab as FLOAT) WHERE ab > 0;
 --Query the home run averages for a given year range
 SELECT fullnames.namefirst, fullnames.namelast, avghr.avghomer
 	FROM
@@ -103,10 +143,34 @@ SELECT fullnames.namefirst, fullnames.namelast, avghr.avghomer
     ON primarypos.playerid=poslist.playerid AND primarypos.position_occurence > poslist.position_occurence
     WHERE primarypos.playerid IS NULL;
 
---Query the pitcher names
-SELECT  master.namefirst, master.namelast, pitching.*
-  FROM baseball.pitching AS pitching
-  JOIN baseball.master AS master
-  ON master.playerid = pitching.playerid
-  WHERE pitching.yearid >= 1871
-  AND pitching.yearid <= 2016
+--Query the top homers averages of a given year range by position, but with materialized views to improve performance
+SELECT fullnames.namefirst, fullnames.namelast, avghr.avghomer, position.pos
+				FROM
+				--Get player full names from master table
+					batter_names
+						as fullnames
+				--Get homer averages and constrain by year
+					JOIN
+						(SELECT
+							avg(baseball.batting.hr) as avghomer,
+							baseball.batting.playerid as idavg
+							FROM baseball.batting
+							WHERE baseball.batting.yearid >= 1800
+							AND baseball.batting.yearid <= 2016
+							GROUP BY idavg)
+						 as avghr
+					ON fullnames.idall = avghr.idavg
+				--Get primary player positions
+					JOIN (  SELECT poslist.playerid, poslist.pos
+						FROM position_occurence
+							AS poslist
+							LEFT JOIN position_occurence AS primarypos
+							ON primarypos.playerid=poslist.playerid AND primarypos.position_occurence >
+							 poslist.position_occurence
+							WHERE primarypos.playerid IS NULL)
+						as position
+				 ON avghr.idavg = position.playerid
+		--     WHERE position.pos = ''
+				GROUP BY fullnames.namefirst, fullnames.namelast, avghr.avghomer, position.pos
+				ORDER BY avghomer DESC
+				LIMIT 10;

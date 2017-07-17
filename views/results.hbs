@@ -2,7 +2,8 @@
 </head>
 <script src="/static/js/nouislider.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-
+Minimum year: {{minYear}}<br>
+Maximum year: {{maxYear}}<br>
 {{#each results}}
         <div class="col s11">
           <strong>{{this.namefirst}} {{this.namelast}}</strong>
@@ -48,7 +49,7 @@
     var html5Slider = document.getElementById('html5');
 
     noUiSlider.create(html5Slider, {
-    	start: [ 1871, 2016 ],
+    	start: [ {{minYear}}, {{maxYear}} ],
     	connect: true,
     	range: {
     		'min': 1871,
