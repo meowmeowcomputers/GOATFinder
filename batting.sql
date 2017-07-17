@@ -1,6 +1,13 @@
 ALTER TABLE "baseball"."batting" add ibbint bigint;
 ;
-UPDATE "baseball"."batting" SET ibbint = CAST(ibb as BIGINT) WHERE ibb is not null;
+UPDATE "baseball"."batting" SET hbp = 0 WHERE hbp ='';
+
+
+UPDATE "baseball"."batting" SET sh = 0 WHERE sh =''
+
+UPDATE "baseball"."batting" SET sf = 0 WHERE sf =''
+
+UPDATE "baseball"."batting" SET gidp = 0 WHERE gidp =''
 
 -- Add batting averages, 4 decimal points
 UPDATE baseball.batting SET avg = CAST(h as FLOAT)/CAST(ab as FLOAT) WHERE ab > 0;
@@ -144,8 +151,8 @@ SELECT fullnames.namefirst, fullnames.namelast, avghr.avghomer
     ON primarypos.playerid=poslist.playerid AND primarypos.position_occurence > poslist.position_occurence
     WHERE primarypos.playerid IS NULL;
 
---Query the top homers averages of a given year range by position, but with materialized views to improve performance
-SELECT fullnames.namefirst, fullnames.namelast, avghr.avghomer, position.pos
+--Query the top ops averages of a given year range by position, but with materialized views to improve performance
+SELECT fullnames.namefirst, fullnames.namelast, avghr.ops, position.pos, avghr.abavg
 				FROM
 				--Get player full names from master table
 					batter_names
@@ -153,8 +160,9 @@ SELECT fullnames.namefirst, fullnames.namelast, avghr.avghomer, position.pos
 				--Get homer averages and constrain by year
 					JOIN
 						(SELECT
-							avg(baseball.batting.hr) as avghomer,
-							baseball.batting.playerid as idavg
+							avg(baseball.batting.ops) as ops,
+							baseball.batting.playerid as idavg,
+							avg(baseball.batting.ab) as abavg
 							FROM baseball.batting
 							WHERE baseball.batting.yearid >= 1800
 							AND baseball.batting.yearid <= 2016
@@ -172,6 +180,7 @@ SELECT fullnames.namefirst, fullnames.namelast, avghr.avghomer, position.pos
 						as position
 				 ON avghr.idavg = position.playerid
 		--     WHERE position.pos = ''
-				GROUP BY fullnames.namefirst, fullnames.namelast, avghr.avghomer, position.pos
-				ORDER BY avghomer DESC
+				WHERE avghr.abavg > 500
+				GROUP BY fullnames.namefirst, fullnames.namelast, avghr.ops, position.pos, avghr.abavg
+				ORDER BY ops DESC
 				LIMIT 10;

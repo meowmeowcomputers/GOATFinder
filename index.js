@@ -91,30 +91,7 @@ app.post('/submit', function (req, resp) {
   // console.log('Maximum year: '+req.body.max_slider)
   var minYear = req.body.min_slider;
   var maxYear = req.body.max_slider;
-  db.query(`SELECT fullnames.namefirst, fullnames.namelast, avghr.avghomer, position.pos\
-        	FROM batter_names as fullnames\
-          	JOIN\
-          		(SELECT\
-        	  		avg(baseball.batting.hr) as avghomer,\
-        	  		baseball.batting.playerid as idavg\
-        				FROM baseball.batting\
-                WHERE baseball.batting.yearid >= ${minYear}\
-                AND baseball.batting.yearid <= ${maxYear}\
-       		      GROUP BY idavg)\
-         		   as avghr\
-         	  ON fullnames.idall = avghr.idavg\
-            JOIN (  SELECT poslist.playerid, poslist.pos\
-              FROM position_occurence\
-                AS poslist\
-                LEFT JOIN position_occurence AS primarypos\
-                ON primarypos.playerid=poslist.playerid AND primarypos.position_occurence >\
-                 poslist.position_occurence\
-                WHERE primarypos.playerid IS NULL)\
-              as position\
-           ON avghr.idavg = position.playerid\
-          GROUP BY fullnames.namefirst, fullnames.namelast, avghr.avghomer, position.pos\
-          ORDER BY avghomer DESC\
-          LIMIT 10;`)
+  db.query(`SELECT fullnames.namefirst, fullnames.namelast, avghr.ops, position.pos, avghr.abavg FROM batter_names as fullnames JOIN (SELECT avg(baseball.batting.ops) as ops, baseball.batting.playerid as idavg, avg(baseball.batting.ab) as abavg FROM baseball.batting WHERE baseball.batting.yearid >= ${minYear} AND baseball.batting.yearid <= ${maxYear} GROUP BY idavg) as avghr ON fullnames.idall = avghr.idavg JOIN ( SELECT poslist.playerid, poslist.pos FROM position_occurence AS poslist LEFT JOIN position_occurence AS primarypos ON primarypos.playerid=poslist.playerid AND primarypos.position_occurence > poslist.position_occurence WHERE primarypos.playerid IS NULL) as position ON avghr.idavg = position.playerid WHERE avghr.abavg > 500 GROUP BY fullnames.namefirst, fullnames.namelast, avghr.ops, position.pos, avghr.abavg ORDER BY ops DESC LIMIT 10;`)
     .then(function(results) {
       resp.render('results.hbs', {results: results, minYear: minYear, maxYear: maxYear});
     })
