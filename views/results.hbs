@@ -1,12 +1,23 @@
 <head>
   <link href="/static/css/nouislider.css" rel="stylesheet" type="text/css">
   <link href="/static/css/bulma.css" rel="stylesheet" type="text/css">
+  <style>
+  h1 {
+    font-size: 2vw !important;
+  }
+  h3 {
+    font-size: 1.3vw !important;
+  }
+  .centerme {
+    text-align: center;
+  }
+  </style>
 </head>
 <script src="/static/js/nouislider.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <div class="columns">
   <div class="column">
-  </div>  <div class="column">
+  </div>  <div class="column is-two-thirds centerme">
 <h1 class="is-large">The greatest players of {{minYear}} to {{maxYear}}</h1>
     </div>
 <div class="column">
@@ -26,7 +37,7 @@
 
             </div>
             <div class="col s1">
-              OPS from {{minYear}} to {{maxYear}}: {{this.ops}}
+             Average OPS:  {{this.ops}}
               <br>
 
             </div>
@@ -43,7 +54,7 @@
 
           </div>
           <div class="col s1">
-            OPS from {{minYear}} to {{maxYear}}: {{this.ops}}
+           Average OPS:  {{this.ops}}
             <br>
 
           </div>
@@ -61,7 +72,7 @@
 
           </div>
           <div class="col s1">
-            OPS from {{minYear}} to {{maxYear}}: {{this.ops}}
+           Average OPS:  {{this.ops}}
             <br>
 
           </div>
@@ -79,7 +90,7 @@
 
           </div>
           <div class="col s1">
-            OPS from {{minYear}} to {{maxYear}}: {{this.ops}}
+           Average OPS:  {{this.ops}}
             <br>
 
           </div>
@@ -103,14 +114,14 @@
 
           </div>
           <div class="col s1">
-            OPS from {{minYear}} to {{maxYear}}: {{this.ops}}
+           Average OPS:  {{this.ops}}
             <br>
 
           </div>
 
         {{/each}}
       </div>
-      <div class="column is-third">
+      <div class="column">
   <h3>Outfield</h3>
   {{#each outfield}}
           <div class="col s11">
@@ -120,7 +131,7 @@
 
           </div>
           <div class="col s1">
-            OPS from {{minYear}} - {{maxYear}} {{this.ops}}
+            Average OPS: {{maxYear}} {{this.ops}}
             <br>
 
           </div>
@@ -131,13 +142,34 @@
       </div>
 </div>
 <br><br>
+<div class="columns">
+  <div class="column"></div>
+  <div class="column is-two-thirds">
+
   <form action="/submit" method="POST">
-      		<div class="example">
+                <div class="example">
       			<div id="html5"></div>
-      			<select id="input-select" name="min_slider"></select>
-            <select id="input-select-max" name="max_slider"></select>
+                </div>
+            <div class="columns">
+              <div class="column">
+              Minimum Year<br>
+        			<select id="input-select" name="min_slider"></select>
+                </div>
+              <div class="column"></div>
+              <div class="column"></div>
+              <div class="column"></div>
+              <div class="column" style="text-align:right">
+              Maximum Year<br>
+              <select id="input-select-max" name="max_slider"></select>
+              </div>
+            </div>
   <button type="submit">Submit</button>
-</form>
+  </form>
+
+  </div>
+  <div class="column"></div>
+</div>
+</div>
     <script>
     var select = document.getElementById('input-select');
     var select_max = document.getElementById('input-select-max');

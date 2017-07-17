@@ -176,7 +176,8 @@ SELECT fullnames.namefirst, fullnames.namelast, avghr.ops, position.pos, avghr.a
 							LEFT JOIN position_occurence AS primarypos
 							ON primarypos.playerid=poslist.playerid AND primarypos.position_occurence >
 							 poslist.position_occurence
-							WHERE primarypos.playerid IS NULL)
+							WHERE primarypos.playerid IS NULL
+							AND poslist.pos != 'P')
 						as position
 				 ON avghr.idavg = position.playerid
 		--     WHERE position.pos = ''
