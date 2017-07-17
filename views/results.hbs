@@ -1,23 +1,135 @@
-<head><link href="/static/css/nouislider.css" rel="stylesheet" type="text/css">
+<head>
+  <link href="/static/css/nouislider.css" rel="stylesheet" type="text/css">
+  <link href="/static/css/bulma.css" rel="stylesheet" type="text/css">
 </head>
 <script src="/static/js/nouislider.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-Minimum year: {{minYear}}<br>
-Maximum year: {{maxYear}}<br>
-{{#each results}}
-        <div class="col s11">
-          <strong>{{this.namefirst}} {{this.namelast}}</strong>
+<div class="columns">
+  <div class="column">
+  </div>  <div class="column">
+<h1 class="is-large">The greatest players of {{minYear}} to {{maxYear}}</h1>
+    </div>
+<div class="column">
+</div>
+</div>
+<div class="columns">
+  <div class="column">
+  </div>
+  <div class="column">
 
-          <br>
+    <h3>First Base</h3>
+    {{#each firstbase}}
+            <div class="col s11">
+              <strong>{{this.namefirst}} {{this.namelast}}</strong>
 
-        </div>
-        <div class="col s1">
-          Average OPS for year range: {{this.ops}}
-          <br>
-          Position: {{this.pos}}
-        </div>
+              <br>
 
-      {{/each}}
+            </div>
+            <div class="col s1">
+              OPS from {{minYear}} to {{maxYear}}: {{this.ops}}
+              <br>
+
+            </div>
+
+          {{/each}}
+    </div>
+  <div class="column">
+  <h3>Second Base</h3>
+  {{#each secondbase}}
+          <div class="col s11">
+            <strong>{{this.namefirst}} {{this.namelast}}</strong>
+
+            <br>
+
+          </div>
+          <div class="col s1">
+            OPS from {{minYear}} to {{maxYear}}: {{this.ops}}
+            <br>
+
+          </div>
+
+        {{/each}}
+    </div>
+    <div class="column">
+
+  <h3>Shortstop</h3>
+  {{#each shortstop}}
+          <div class="col s11">
+            <strong>{{this.namefirst}} {{this.namelast}}</strong>
+
+            <br>
+
+          </div>
+          <div class="col s1">
+            OPS from {{minYear}} to {{maxYear}}: {{this.ops}}
+            <br>
+
+          </div>
+
+        {{/each}}
+      </div>
+    <div class="column">
+
+  <h3>Third Base</h3>
+  {{#each thirdbase}}
+          <div class="col s11">
+            <strong>{{this.namefirst}} {{this.namelast}}</strong>
+
+            <br>
+
+          </div>
+          <div class="col s1">
+            OPS from {{minYear}} to {{maxYear}}: {{this.ops}}
+            <br>
+
+          </div>
+
+        {{/each}}
+    </div>
+    <div class="column">
+    </div>
+    </div>
+
+  <div class="columns">
+    <div class="column">
+    </div>
+    <div class="column">
+  <h3>Catcher</h3>
+  {{#each catcher}}
+          <div class="col s11">
+            <strong>{{this.namefirst}} {{this.namelast}}</strong>
+
+            <br>
+
+          </div>
+          <div class="col s1">
+            OPS from {{minYear}} to {{maxYear}}: {{this.ops}}
+            <br>
+
+          </div>
+
+        {{/each}}
+      </div>
+      <div class="column is-third">
+  <h3>Outfield</h3>
+  {{#each outfield}}
+          <div class="col s11">
+            <strong>{{this.namefirst}} {{this.namelast}}</strong>
+
+            <br>
+
+          </div>
+          <div class="col s1">
+            OPS from {{minYear}} - {{maxYear}} {{this.ops}}
+            <br>
+
+          </div>
+
+        {{/each}}
+      </div>
+      <div class="column">
+      </div>
+</div>
 <br><br>
   <form action="/submit" method="POST">
       		<div class="example">
