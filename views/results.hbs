@@ -131,13 +131,53 @@
 
           </div>
           <div class="col s1">
-            Average OPS: {{maxYear}} {{this.ops}}
+            Average OPS: {{this.ops}}
             <br>
 
           </div>
 
         {{/each}}
       </div>
+    <div class="column">
+<h3>Starting Pitchers</h3>
+{{#each startingPitcher}}
+        <div class="col s11">
+          <strong>{{this.fname}} {{this.lname}}</strong>
+
+          <br>
+
+        </div>
+        <div class="col s1">
+          Average WHIP: {{this.avgwhip}}
+          <br>
+          Average ERA: {{this.avgera}}
+          <br>
+          Wins over this period: {{this.totalwins}}
+
+        </div>
+
+      {{/each}}
+    </div>
+<div class="column">
+<h3>Elite Bullpen</h3>
+{{#each bullpen}}
+    <div class="col s11">
+      <strong>{{this.fname}} {{this.lname}}</strong>
+
+      <br>
+
+    </div>
+    <div class="col s1">
+      Average WHIP: {{this.avgwhip}}
+      <br>
+      Average ERA: {{this.avgera}}
+      <br>
+      Saves over this period: {{this.totalsaves}}
+
+    </div>
+
+  {{/each}}
+</div>
       <div class="column">
       </div>
 </div>

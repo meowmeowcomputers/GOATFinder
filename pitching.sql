@@ -73,17 +73,14 @@ SELECT eraavg.avgera, pitcher_names.fname, pitcher_names.lname,
     AND pitching.yearid <= 2016
     GROUP BY idavg) as eraavg
   ON eraavg.idavg = pitcher_names.playerid
-  JOIN baseball.fielding
-  ON baseball.fielding.playerid = eraavg.idavg
   WHERE eraavg.avgipouts > 659-100
-  AND CAST(baseball.fielding.gs as int) > 10
   GROUP BY eraavg.avgera, pitcher_names.fname, pitcher_names.lname,
     pitcher_names.playerid, average_outs_per_year, eraavg.totalwins, eraavg.avgwhip
   ORDER BY eraavg.avgwhip ASC;
 
 --Same query as above ready to be inserted into index.js
-SELECT eraavg.avgera, pitcher_names.fname, pitcher_names.lname,
-  pitcher_names.playerid, eraavg.avgipouts as average_outs_per_year, eraavg.totalwins, eraavg.avgwhip
+SELECT CAST(eraavg.avgera as DECIMAL(4,3)), pitcher_names.fname, pitcher_names.lname,
+  pitcher_names.playerid, eraavg.avgipouts as average_outs_per_year, eraavg.totalwins, CAST(eraavg.avgwhip as DECIMAL(4,3))
   FROM
     pitcher_names
   JOIN
@@ -95,18 +92,68 @@ SELECT eraavg.avgera, pitcher_names.fname, pitcher_names.lname,
     avg(pitching.w) as avgwins,
     avg(pitching.whip) as avgwhip
     FROM baseball.pitching
-    WHERE pitching.yearid >= 1871
-    AND pitching.yearid <= 2016
+    WHERE pitching.yearid >= ${minYear}
+    AND pitching.yearid <= ${maxYear}
     GROUP BY idavg) as eraavg
   ON eraavg.idavg = pitcher_names.playerid
-  JOIN baseball.fielding
-  ON baseball.fielding.playerid = eraavg.idavg
-  WHERE eraavg.avgipouts > 659-100
-  AND CAST(baseball.fielding.gs as int) > 10
+  WHERE eraavg.avgipouts > ${pitchConstraints[1]}-100
   GROUP BY eraavg.avgera, pitcher_names.fname, pitcher_names.lname,
     pitcher_names.playerid, average_outs_per_year, eraavg.totalwins, eraavg.avgwhip
   ORDER BY eraavg.avgwhip ASC;
-
-
---Generate the ipouts/wins threshhold by year
+--Generate the ipouts/wins threshhold by year for starters
 SELECT avg(w) as avgwins, avg(ipouts) as avgipouts FROM baseball.pitching WHERE ipouts > 486 AND pitching.yearid >= 2000 AND pitching.yearid <= 2016;
+
+--Query to find bullpen
+SELECT CAST(eraavg.avgera as DECIMAL(5,3)), pitcher_names.fname, pitcher_names.lname,
+  pitcher_names.playerid, CAST(eraavg.avgwhip as DECIMAL(5,3)),
+  eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso
+  FROM
+    pitcher_names
+  JOIN
+  (SELECT
+    avg(pitching.era) as avgera,
+    pitching.playerid as idavg,
+    avg(pitching.ipouts) as avgipouts,
+	sum(pitching.sv) as totalsaves,
+	avg(pitching.sv) as avgsaves,
+    avg(pitching.whip) as avgwhip,
+    sum(pitching.so) as totalso
+    FROM baseball.pitching
+    WHERE pitching.yearid >= 1871
+    AND pitching.yearid <= 1930
+    GROUP BY idavg) as eraavg
+  ON eraavg.idavg = pitcher_names.playerid
+	WHERE eraavg.avgwhip < 2
+
+  GROUP BY eraavg.avgera, pitcher_names.fname, pitcher_names.lname,
+    pitcher_names.playerid, eraavg.avgwhip, eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso
+
+  ORDER BY ROUND(totalsaves, -1) desc, eraavg.avgwhip asc
+  LIMIT 5;
+  --Same query as above ready to be inserted into index.js
+  SELECT CAST(eraavg.avgera as DECIMAL(5,3)), pitcher_names.fname, pitcher_names.lname,
+    pitcher_names.playerid, CAST(eraavg.avgwhip as DECIMAL(5,3)),
+    eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso
+    FROM
+      pitcher_names
+    JOIN
+    (SELECT
+      avg(pitching.era) as avgera,
+      pitching.playerid as idavg,
+      avg(pitching.ipouts) as avgipouts,
+  	sum(pitching.sv) as totalsaves,
+  	avg(pitching.sv) as avgsaves,
+      avg(pitching.whip) as avgwhip,
+      sum(pitching.so) as totalso
+      FROM baseball.pitching
+      WHERE pitching.yearid >= ${minYear}
+      AND pitching.yearid <= ${maxYear}
+      GROUP BY idavg) as eraavg
+    ON eraavg.idavg = pitcher_names.playerid
+  	WHERE eraavg.avgwhip < 2
+
+    GROUP BY eraavg.avgera, pitcher_names.fname, pitcher_names.lname,
+      pitcher_names.playerid, eraavg.avgwhip, eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso
+
+    ORDER BY ROUND(totalsaves, -1) desc, eraavg.avgwhip asc
+    LIMIT 5;
