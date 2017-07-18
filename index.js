@@ -33,16 +33,6 @@ app.listen(PORT, function () {
 
 });
 
-// // NOTE: Sample query: Un-Comment to check connection to database
-// db.query("SELECT * FROM baseball.batting LIMIT 100")
-//   .then(function(results) {
-//     results.forEach(function(row) {
-//         console.log(row.name, row.atmosphere, row.parking, row.busy);
-//     });
-//     // return db.one("SELECT * FROM restaurant WHERE name='tout suit'");
-//   })
-
-
 app.get('/', function (req, resp) {
   resp.render('index.hbs');
 });
@@ -51,21 +41,32 @@ app.get('/submit', function (req, resp) {
   resp.render('index.hbs');
 });
 
+const opsQuery = "SELECT fullnames.namefirst, fullnames.namelast, CAST(avghr.ops as DECIMAL(4,3)), position.pos, avghr.abavg FROM batter_names as fullnames JOIN (SELECT avg(baseball.batting.ops) as ops, baseball.batting.playerid as idavg, avg(baseball.batting.ab) as abavg FROM baseball.batting WHERE baseball.batting.yearid >= ${minYear} AND baseball.batting.yearid <= ${maxYear} GROUP BY idavg) as avghr ON fullnames.idall = avghr.idavg JOIN ( SELECT poslist.playerid, poslist.pos FROM position_occurence AS poslist LEFT JOIN position_occurence AS primarypos ON primarypos.playerid=poslist.playerid AND primarypos.position_occurence > poslist.position_occurence WHERE primarypos.playerid IS NULL) as position ON avghr.idavg = position.playerid WHERE avghr.abavg > 350 AND position.pos = ${pos} GROUP BY fullnames.namefirst, fullnames.namelast, avghr.ops, position.pos, avghr.abavg ORDER BY ops DESC LIMIT ${limit};"
+
+const hrQuery = "SELECT fullnames.namefirst, fullnames.namelast, primary_position.pos, statavg.abavg, statavg.hravg, statavg.idavg as playerid FROM batter_names as fullnames JOIN (SELECT baseball.batting.playerid as idavg, avg(baseball.batting.ab) as abavg, avg(baseball.batting.hr) as hravg FROM baseball.batting WHERE baseball.batting.yearid >= ${minYear} AND baseball.batting.yearid <= ${maxYear} GROUP BY idavg) as statavg ON fullnames.idall = statavg.idavg JOIN primary_position ON statavg.idavg = primary_position.playerid WHERE primary_position.pos = ${pos} AND statavg.abavg > 500 GROUP BY fullnames.namefirst, fullnames.namelast, primary_position.pos, statavg.abavg, statavg.hravg, statavg.idavg ORDER BY statavg.hravg DESC LIMIT ${limit};"
+
 app.post('/submit', function (req, resp) {
   // console.log('Minimum year: '+req.body.min_slider)
   // console.log('Maximum year: '+req.body.max_slider)
+  var posQuery
   var minYear = req.body.min_slider;
   var maxYear = req.body.max_slider;
-  var gap = maxYear - minYear
   var allResults = []
+  console.log("Batter weight property: "+req.body.batting)
+  if (req.body.batting == 'ops'){
+      var posQuery = opsQuery
+  }
+  else if(req.body.batting == 'hr'){
+      var posQuery = hrQuery
+  }
   //Outfielder search
-  db.query(`SELECT fullnames.namefirst, fullnames.namelast, CAST(avghr.ops as DECIMAL(4,3)), position.pos, avghr.abavg FROM batter_names as fullnames JOIN (SELECT avg(baseball.batting.ops) as ops, baseball.batting.playerid as idavg, avg(baseball.batting.ab) as abavg FROM baseball.batting WHERE baseball.batting.yearid >= ${minYear} AND baseball.batting.yearid <= ${maxYear} GROUP BY idavg) as avghr ON fullnames.idall = avghr.idavg JOIN ( SELECT poslist.playerid, poslist.pos FROM position_occurence AS poslist LEFT JOIN position_occurence AS primarypos ON primarypos.playerid=poslist.playerid AND primarypos.position_occurence > poslist.position_occurence WHERE primarypos.playerid IS NULL) as position ON avghr.idavg = position.playerid WHERE avghr.abavg > 350 AND position.pos = 'OF' GROUP BY fullnames.namefirst, fullnames.namelast, avghr.ops, position.pos, avghr.abavg ORDER BY ops DESC LIMIT 6;`)
+  db.query(posQuery, {minYear:minYear, maxYear:maxYear, pos:'OF', limit:6})
     .then(function(results) {
       allResults.push(results)
     })
   //First Base
     .then(function() {
-      return db.query(`SELECT fullnames.namefirst, fullnames.namelast, CAST(avghr.ops as DECIMAL(4,3)), position.pos, avghr.abavg FROM batter_names as fullnames JOIN (SELECT avg(baseball.batting.ops) as ops, baseball.batting.playerid as idavg, avg(baseball.batting.ab) as abavg FROM baseball.batting WHERE baseball.batting.yearid >= ${minYear} AND baseball.batting.yearid <= ${maxYear} GROUP BY idavg) as avghr ON fullnames.idall = avghr.idavg JOIN ( SELECT poslist.playerid, poslist.pos FROM position_occurence AS poslist LEFT JOIN position_occurence AS primarypos ON primarypos.playerid=poslist.playerid AND primarypos.position_occurence > poslist.position_occurence WHERE primarypos.playerid IS NULL) as position ON avghr.idavg = position.playerid WHERE avghr.abavg > 350 AND position.pos = '1B' GROUP BY fullnames.namefirst, fullnames.namelast, avghr.ops, position.pos, avghr.abavg ORDER BY ops DESC LIMIT 2;`)
+      return db.query(posQuery, {minYear:minYear, maxYear:maxYear, pos:'1B', limit:2})
     })
     .then(function(results) {
       allResults.push(results)

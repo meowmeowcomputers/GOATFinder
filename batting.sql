@@ -185,3 +185,52 @@ SELECT fullnames.namefirst, fullnames.namelast, avghr.ops, position.pos, avghr.a
 				GROUP BY fullnames.namefirst, fullnames.namelast, avghr.ops, position.pos, avghr.abavg
 				ORDER BY ops DESC
 				LIMIT 10;
+--Query the top homer hitters by position
+SELECT fullnames.namefirst, fullnames.namelast, primary_position.pos, statavg.abavg, statavg.hravg, statavg.idavg as playerid
+				FROM
+				--Get player full names from master table
+					batter_names
+						as fullnames
+				--Get homer averages and constrain by year
+					JOIN
+						(SELECT
+							baseball.batting.playerid as idavg,
+							avg(baseball.batting.ab) as abavg,
+							avg(baseball.batting.hr) as hravg
+							FROM baseball.batting
+							WHERE baseball.batting.yearid >= 1800
+							AND baseball.batting.yearid <= 2016
+							GROUP BY idavg)
+						 as statavg
+					ON fullnames.idall = statavg.idavg
+				--Get primary player positions
+					JOIN primary_position
+				 ON statavg.idavg = primary_position.playerid
+		    WHERE primary_position.pos = 'OF'
+			AND statavg.abavg > 500
+				GROUP BY fullnames.namefirst, fullnames.namelast, primary_position.pos, statavg.abavg, 	statavg.hravg, statavg.idavg
+				ORDER BY statavg.hravg DESC
+				LIMIT 6;
+--Same above query with parameters
+SELECT fullnames.namefirst, fullnames.namelast, primary_position.pos, statavg.abavg, statavg.hravg, statavg.idavg as playerid
+				FROM
+					batter_names
+						as fullnames
+					JOIN
+						(SELECT
+							baseball.batting.playerid as idavg,
+							avg(baseball.batting.ab) as abavg,
+							avg(baseball.batting.hr) as hravg
+							FROM baseball.batting
+							WHERE baseball.batting.yearid >= ${minYear}
+							AND baseball.batting.yearid <= ${maxYear}
+							GROUP BY idavg)
+						 as statavg
+					ON fullnames.idall = statavg.idavg
+					JOIN primary_position
+				 ON statavg.idavg = primary_position.playerid
+		    WHERE primary_position.pos = ${pos}
+			AND statavg.abavg > 500
+				GROUP BY fullnames.namefirst, fullnames.namelast, primary_position.pos, statavg.abavg, 	statavg.hravg, statavg.idavg
+				ORDER BY statavg.hravg DESC
+				LIMIT ${limit};
