@@ -76,8 +76,7 @@ SELECT eraavg.avgera, pitcher_names.fname, pitcher_names.lname,
   WHERE eraavg.avgipouts > 659-100
   GROUP BY eraavg.avgera, pitcher_names.fname, pitcher_names.lname,
     pitcher_names.playerid, average_outs_per_year, eraavg.totalwins, eraavg.avgwhip
-  ORDER BY eraavg.avgwhip ASC;
-
+  ORDER BY eraavg.totalwins DESC;
 --Same query as above ready to be inserted into index.js
 SELECT CAST(eraavg.avgera as DECIMAL(4,3)), pitcher_names.fname, pitcher_names.lname,
   pitcher_names.playerid, eraavg.avgipouts as average_outs_per_year, eraavg.totalwins, CAST(eraavg.avgwhip as DECIMAL(4,3))
@@ -99,7 +98,7 @@ SELECT CAST(eraavg.avgera as DECIMAL(4,3)), pitcher_names.fname, pitcher_names.l
   WHERE eraavg.avgipouts > ${pitchConstraints[1]}-100
   GROUP BY eraavg.avgera, pitcher_names.fname, pitcher_names.lname,
     pitcher_names.playerid, average_outs_per_year, eraavg.totalwins, eraavg.avgwhip
-  ORDER BY eraavg.avgwhip ASC;
+  ORDER BY eraavg.totalwins DESC;
 --Generate the ipouts/wins threshhold by year for starters
 SELECT avg(w) as avgwins, avg(ipouts) as avgipouts FROM baseball.pitching WHERE ipouts > 486 AND pitching.yearid >= 2000 AND pitching.yearid <= 2016;
 

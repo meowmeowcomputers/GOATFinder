@@ -56,7 +56,7 @@ app.post('/submit', function (req, resp) {
   // console.log('Maximum year: '+req.body.max_slider)
   var minYear = req.body.min_slider;
   var maxYear = req.body.max_slider;
-  var gap = maxYear - minYear;
+  var gap = maxYear - minYear
   var allResults = []
   //Outfielder search
   db.query(`SELECT fullnames.namefirst, fullnames.namelast, CAST(avghr.ops as DECIMAL(4,3)), position.pos, avghr.abavg FROM batter_names as fullnames JOIN (SELECT avg(baseball.batting.ops) as ops, baseball.batting.playerid as idavg, avg(baseball.batting.ab) as abavg FROM baseball.batting WHERE baseball.batting.yearid >= ${minYear} AND baseball.batting.yearid <= ${maxYear} GROUP BY idavg) as avghr ON fullnames.idall = avghr.idavg JOIN ( SELECT poslist.playerid, poslist.pos FROM position_occurence AS poslist LEFT JOIN position_occurence AS primarypos ON primarypos.playerid=poslist.playerid AND primarypos.position_occurence > poslist.position_occurence WHERE primarypos.playerid IS NULL) as position ON avghr.idavg = position.playerid WHERE avghr.abavg > 350 AND position.pos = 'OF' GROUP BY fullnames.namefirst, fullnames.namelast, avghr.ops, position.pos, avghr.abavg ORDER BY ops DESC LIMIT 6;`)
@@ -108,7 +108,7 @@ app.post('/submit', function (req, resp) {
     })
   //Starting pitcher query
     .then(function(pitchConstraints){
-      return db.query(`SELECT CAST(eraavg.avgera as DECIMAL(4,3)), pitcher_names.fname, pitcher_names.lname, pitcher_names.playerid, eraavg.avgipouts as average_outs_per_year, eraavg.totalwins, CAST(eraavg.avgwhip as DECIMAL(4,3)) FROM pitcher_names JOIN (SELECT avg(pitching.era) as avgera, pitching.playerid as idavg, avg(pitching.ipouts) as avgipouts, sum(pitching.w) as totalwins, avg(pitching.w) as avgwins, avg(pitching.whip) as avgwhip FROM baseball.pitching WHERE pitching.yearid >= ${minYear} AND pitching.yearid <= ${maxYear} GROUP BY idavg) as eraavg ON eraavg.idavg = pitcher_names.playerid WHERE eraavg.avgipouts > ${pitchConstraints[1]}-100 GROUP BY eraavg.avgera, pitcher_names.fname, pitcher_names.lname, pitcher_names.playerid, average_outs_per_year, eraavg.totalwins, eraavg.avgwhip ORDER BY eraavg.avgwhip ASC LIMIT 5;`)
+      return db.query(`SELECT CAST(eraavg.avgera as DECIMAL(4,3)), pitcher_names.fname, pitcher_names.lname, pitcher_names.playerid, eraavg.avgipouts as average_outs_per_year, eraavg.totalwins, CAST(eraavg.avgwhip as DECIMAL(4,3)) FROM pitcher_names JOIN (SELECT avg(pitching.era) as avgera, pitching.playerid as idavg, avg(pitching.ipouts) as avgipouts, sum(pitching.w) as totalwins, avg(pitching.w) as avgwins, avg(pitching.whip) as avgwhip FROM baseball.pitching WHERE pitching.yearid >= ${minYear} AND pitching.yearid <= ${maxYear} GROUP BY idavg) as eraavg ON eraavg.idavg = pitcher_names.playerid WHERE eraavg.avgipouts > ${pitchConstraints[1]}-100 GROUP BY eraavg.avgera, pitcher_names.fname, pitcher_names.lname, pitcher_names.playerid, average_outs_per_year, eraavg.totalwins, eraavg.avgwhip ORDER BY eraavg.totalwins DESC LIMIT 5;`)
     })
     .then(function(results) {
         allResults.push(results)
