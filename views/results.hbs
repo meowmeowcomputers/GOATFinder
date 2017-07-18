@@ -18,7 +18,7 @@
 <div class="columns">
   <div class="column">
   </div>  <div class="column is-two-thirds centerme">
-<h1 class="is-large">The greatest players of {{minYear}} to {{maxYear}}</h1>
+<h1 class="is-large">The Greatest Baseball Players of {{minYear}} to {{maxYear}}</h1>
     </div>
 <div class="column">
 </div>
@@ -146,25 +146,31 @@
   <div class="column"></div>
   <div class="column is-two-thirds">
 
-  <form action="/submit" method="POST">
-                <div class="example">
-      			<div id="html5"></div>
+    <form action="/submit" method="POST">
+                  <div class="example">
+              <div id="html5"></div>
+                  </div>
+              <div class="columns">
+                <div class="column">
+                Minimum Year<br>
+                <select id="input-select" name="min_slider" class="select is-large"></select>
+                  </div>
+                <div class="column"></div>
+                <div class="column"></div>
+                <div class="column"></div>
+                <div class="column" style="text-align:right">
+                Maximum Year<br>
+                <select id="input-select-max" name="max_slider" class="select is-large"></select>
                 </div>
-            <div class="columns">
-              <div class="column">
-              Minimum Year<br>
-        			<select id="input-select" name="min_slider"></select>
-                </div>
-              <div class="column"></div>
-              <div class="column"></div>
-              <div class="column"></div>
-              <div class="column" style="text-align:right">
-              Maximum Year<br>
-              <select id="input-select-max" name="max_slider"></select>
               </div>
-            </div>
-  <button type="submit">Submit</button>
-  </form>
+      <div class="columns">
+        <div class="column is-one-third"></div>
+          <div class="column is-one-third" style="text-align:center">
+        <button type="submit" class="button is-large">Submit</button>
+        </div>
+        <div class="column is-one-third"></div>
+      </div>
+    </form>
 
   </div>
   <div class="column"></div>
