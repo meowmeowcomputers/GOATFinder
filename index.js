@@ -59,6 +59,9 @@ app.post('/submit', function (req, resp) {
   else if(req.body.batting == 'hr'){
       var posQuery = hrQuery
   }
+  else {
+      var posQuery = opsQuery;
+  }
   //Outfielder search
   db.query(posQuery, {minYear:minYear, maxYear:maxYear, pos:'OF', limit:6})
     .then(function(results) {
