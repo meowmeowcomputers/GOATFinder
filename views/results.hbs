@@ -11,6 +11,9 @@
   .centerme {
     text-align: center;
   }
+  .col, .select {
+    font-size: 1.1vw !important;
+  }
   </style>
 </head>
 <script src="/static/js/nouislider.js"></script>
@@ -18,7 +21,9 @@
 <div class="columns">
   <div class="column">
   </div>  <div class="column is-two-thirds centerme">
-<h1 class="is-large">The Greatest Baseball Players of {{minYear}} to {{maxYear}}</h1>
+<h1 class="is-large">The Greatest Baseball Players of {{minYear}} to {{maxYear}}<br>
+  {{#if ops}} by OPS (On Base + Slugging) {{/if}}
+</h1>
     </div>
 <div class="column">
 </div>
@@ -210,8 +215,8 @@
                     <div class="control">
                       <div class="select">
                         <select name="batting">
-                          <option value="ops">OPS</option>
-                          <option value="hr">Homers</option>
+                          <option value="ops"{{#if retainMenu.ops}}selected{{/if}}>OPS</option>
+                          <option value="hr"{{#if retainMenu.hr}}selected{{/if}}>Homers</option>
                           <option value="rbi">Runs Batted In</option>
                           <option value="rrbi">Runs scored plus RBI</option>
                         </select>

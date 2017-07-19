@@ -49,19 +49,33 @@ app.post('/submit', function (req, resp) {
   // console.log('Minimum year: '+req.body.min_slider)
   // console.log('Maximum year: '+req.body.max_slider)
   var posQuery
+  var pitchQuery
   var minYear = req.body.min_slider;
   var maxYear = req.body.max_slider;
   var allResults = []
-  console.log("Batter weight property: "+req.body.batting)
+  var retainMenu = {}
+  // console.log("Batter weight property: "+req.body.batting)
   if (req.body.batting == 'ops'){
-      var posQuery = opsQuery
+      posQuery = opsQuery;
+      retainMenu.ops = 1;
   }
   else if(req.body.batting == 'hr'){
-      var posQuery = hrQuery
+      posQuery = hrQuery;
+      retainMenu.hr = 1;
+  }
+  else if(req.body.batting == 'rbi'){
+      posQuery = rbiQuery;
+      retainMenu.rbi = 1;
+  }
+  else if(req.body.batting == 'rrbi'){
+      posQuery = rrbiQuery;
+      retainMenu.rrbi = 1;
   }
   else {
       var posQuery = opsQuery;
+      retainMenu.ops = 1;
   }
+
   //Outfielder search
   db.query(posQuery, {minYear:minYear, maxYear:maxYear, pos:'OF', limit:6})
     .then(function(results) {
@@ -122,6 +136,8 @@ app.post('/submit', function (req, resp) {
       return db.query(`SELECT CAST(eraavg.avgera as DECIMAL(5,3)), pitcher_names.fname, pitcher_names.lname, pitcher_names.playerid, CAST(eraavg.avgwhip as DECIMAL(5,3)), eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso FROM pitcher_names JOIN (SELECT avg(pitching.era) as avgera, pitching.playerid as idavg, avg(pitching.ipouts) as avgipouts, sum(pitching.sv) as totalsaves, avg(pitching.sv) as avgsaves, avg(pitching.whip) as avgwhip, sum(pitching.so) as totalso FROM baseball.pitching WHERE pitching.yearid >= ${minYear} AND pitching.yearid <= ${maxYear} GROUP BY idavg) as eraavg ON eraavg.idavg = pitcher_names.playerid WHERE eraavg.avgwhip < 2 GROUP BY eraavg.avgera, pitcher_names.fname, pitcher_names.lname, pitcher_names.playerid, eraavg.avgwhip, eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso ORDER BY ROUND(totalsaves, -1) desc, eraavg.avgwhip asc LIMIT 4;`)
     })
     .then(function(results) {
+        console.log("retainMenu.hr"+retainMenu.hr);
+        console.log("retainMenu.ops"+retainMenu.ops);
         allResults.push(results)
     })
     .then(function(){
@@ -136,7 +152,7 @@ app.post('/submit', function (req, resp) {
         bullpen: allResults[7],
         minYear: minYear,
         maxYear: maxYear,
-        batting: req.body.batting
+        retainMenu: retainMenu
       });
     })
     .catch(function(err){
