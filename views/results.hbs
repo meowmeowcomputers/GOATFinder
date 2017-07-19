@@ -22,11 +22,13 @@
   <div class="column">
   </div>  <div class="column is-two-thirds centerme">
 <h1 class="is-large">The Greatest Baseball Players of {{minYear}} to {{maxYear}}<br>
-  {{#if retainMenu.ops}} by OPS (On Base + Slugging) for the batters {{/if}}
-  {{#if retainMenu.hr}} by DINGERS for the batters{{/if}}
-  {{#if retainMenu.rbi}} by RBI (Runs Batted In) for the batters{{/if}}
-  {{#if retainMenu.rrbi}} by RBI (Runs Batted In) + Runs Scored for the batters{{/if}}
-
+  {{#if retainMenu.ops}} by OPS (On Base + Slugging) for the batters <br>{{/if}}
+  {{#if retainMenu.hr}} by DINGERS for the batters<br>{{/if}}
+  {{#if retainMenu.rbi}} by RBI (Runs Batted In) for the batters<br>{{/if}}
+  {{#if retainMenu.rrbi}} by RBI (Runs Batted In) + Runs Scored for the batters<br>{{/if}}
+  {{#if retainMenu.sp_whip}} by WHIP (Fewest Walks and Hits per Inning Pitched) for starting pitchers<br>{{/if}}
+  {{#if retainMenu.sp_era}} by ERA (Runs per 9 innings) for starting pitchers<br>{{/if}}
+  {{#if retainMenu.sp_wins}} by total wins on record for starting pitchers<br>{{/if}}
 </h1>
     </div>
 <div class="column">
@@ -49,8 +51,8 @@
               {{#if this.rbiavg}}RBI per year: {{this.rbiavg}} {{/if}}
               {{#if this.rrbiavg}}RBI plus runs scored per year: {{this.rrbiavg}}{{/if}}
               {{#if this.rbiavg}}RBI per year: {{this.rbiavg}} {{/if}}
-{{#if this.rrbiavg}}RBI plus runs scored per year: {{this.rrbiavg}}{{/if}}
-{{#if this.hravg}} Homeruns per year: {{this.hravg}} {{/if}}
+              {{#if this.rrbiavg}}RBI plus runs scored per year: {{this.rrbiavg}}{{/if}}
+              {{#if this.hravg}} Homeruns per year: {{this.hravg}} {{/if}}
              {{#if this.ops}} Average OPS:  {{this.ops}} {{/if}}
               <br>
 
@@ -69,8 +71,8 @@
           </div>
           <div class="col s1">
             {{#if this.rbiavg}}RBI per year: {{this.rbiavg}} {{/if}}
-{{#if this.rrbiavg}}RBI plus runs scored per year: {{this.rrbiavg}}{{/if}}
-{{#if this.hravg}} Homeruns per year: {{this.hravg}} {{/if}}
+            {{#if this.rrbiavg}}RBI plus runs scored per year: {{this.rrbiavg}}{{/if}}
+            {{#if this.hravg}} Homeruns per year: {{this.hravg}} {{/if}}
            {{#if this.ops}} Average OPS:  {{this.ops}} {{/if}}
             <br>
 
@@ -246,9 +248,9 @@
                     <div class="control">
                       <div class="select">
                         <select name="starters">
-                          <option value="sp_whip">Walks/Hits per Inning Pitched</option>
-                          <option value="sp_era">Earned Run Average</option>
-                          <option value="sp_wins">Wins</option>
+                          <option value="sp_whip"{{#if retainMenu.sp_whip}}selected{{/if}}>Walks/Hits per Inning Pitched</option>
+                          <option value="sp_era"{{#if retainMenu.sp_era}}selected{{/if}}>Earned Run Average</option>
+                          <option value="sp_wins"{{#if retainMenu.sp_wins}}selected{{/if}}>Wins</option>
                         </select>
                       </div>
                     </div>
