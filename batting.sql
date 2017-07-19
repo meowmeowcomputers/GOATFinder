@@ -207,7 +207,7 @@ SELECT fullnames.namefirst, fullnames.namelast, primary_position.pos, statavg.ab
 					JOIN primary_position
 				 ON statavg.idavg = primary_position.playerid
 		    WHERE primary_position.pos = 'OF'
-			AND statavg.abavg > 500
+			AND statavg.abavg > 350
 				GROUP BY fullnames.namefirst, fullnames.namelast, primary_position.pos, statavg.abavg, 	statavg.hravg, statavg.idavg
 				ORDER BY statavg.hravg DESC
 				LIMIT 6;
@@ -230,7 +230,106 @@ SELECT fullnames.namefirst, fullnames.namelast, primary_position.pos, statavg.ab
 					JOIN primary_position
 				 ON statavg.idavg = primary_position.playerid
 		    WHERE primary_position.pos = ${pos}
-			AND statavg.abavg > 500
+			AND statavg.abavg > 350
 				GROUP BY fullnames.namefirst, fullnames.namelast, primary_position.pos, statavg.abavg, 	statavg.hravg, statavg.idavg
 				ORDER BY statavg.hravg DESC
+				LIMIT ${limit};
+--Query to find most rbi
+SELECT fullnames.namefirst, fullnames.namelast, primary_position.pos, statavg.abavg, statavg.rbiavg, statavg.idavg as playerid
+				FROM
+				--Get player full names from master table
+					batter_names
+						as fullnames
+				--Get homer averages and constrain by year
+					JOIN
+						(SELECT
+							baseball.batting.playerid as idavg,
+							avg(baseball.batting.ab) as abavg,
+							avg(baseball.batting.rbi) as rbiavg
+							FROM baseball.batting
+							WHERE baseball.batting.yearid >= 1800
+							AND baseball.batting.yearid <= 2016
+							GROUP BY idavg)
+						 as statavg
+					ON fullnames.idall = statavg.idavg
+				--Get primary player positions
+					JOIN primary_position
+				 ON statavg.idavg = primary_position.playerid
+		  --  WHERE primary_position.pos = 'OF'
+			AND statavg.abavg > 350
+				GROUP BY fullnames.namefirst, fullnames.namelast, primary_position.pos, statavg.abavg, 	statavg.rbiavg, statavg.idavg
+				ORDER BY statavg.rbiavg DESC
+				LIMIT 6;
+--Same as above, but ready to insert into app
+SELECT fullnames.namefirst, fullnames.namelast, primary_position.pos, statavg.abavg, statavg.rbiavg, statavg.idavg as playerid
+				FROM
+					batter_names
+						as fullnames
+					JOIN
+						(SELECT
+							baseball.batting.playerid as idavg,
+							avg(baseball.batting.ab) as abavg,
+							avg(baseball.batting.rbi) as rbiavg
+							FROM baseball.batting
+							WHERE baseball.batting.yearid >= ${minYear}
+							AND baseball.batting.yearid <= ${maxYear}
+							GROUP BY idavg)
+						 as statavg
+					ON fullnames.idall = statavg.idavg
+					JOIN primary_position
+				 ON statavg.idavg = primary_position.playerid
+		   WHERE primary_position.pos = ${pos}
+			AND statavg.abavg > 350
+				GROUP BY fullnames.namefirst, fullnames.namelast, primary_position.pos, statavg.abavg, 	statavg.rbiavg, statavg.idavg
+				ORDER BY statavg.rbiavg DESC
+				LIMIT ${limit};
+--Find runs plus rbi
+SELECT fullnames.namefirst, fullnames.namelast, primary_position.pos, statavg.abavg, statavg.rrbiavg, statavg.idavg as playerid
+				FROM
+				--Get player full names from master table
+					batter_names
+						as fullnames
+				--Get homer averages and constrain by year
+					JOIN
+						(SELECT
+							baseball.batting.playerid as idavg,
+							avg(baseball.batting.ab) as abavg,
+							avg(baseball.batting.rbi+baseball.batting.r) as rrbiavg
+							FROM baseball.batting
+							WHERE baseball.batting.yearid >= 1800
+							AND baseball.batting.yearid <= 2016
+							GROUP BY idavg)
+						 as statavg
+					ON fullnames.idall = statavg.idavg
+				--Get primary player positions
+					JOIN primary_position
+				 ON statavg.idavg = primary_position.playerid
+		   WHERE primary_position.pos = 'OF'
+			AND statavg.abavg > 350
+				GROUP BY fullnames.namefirst, fullnames.namelast, primary_position.pos, statavg.abavg, 	statavg.rrbiavg, statavg.idavg
+				ORDER BY statavg.rrbiavg DESC
+				LIMIT 6;
+--Same as above, but ready to insert into app
+SELECT fullnames.namefirst, fullnames.namelast, primary_position.pos, statavg.abavg, statavg.rrbiavg, statavg.idavg as playerid
+				FROM
+					batter_names
+						as fullnames
+					JOIN
+						(SELECT
+							baseball.batting.playerid as idavg,
+							avg(baseball.batting.ab) as abavg,
+							avg(baseball.batting.rbi+baseball.batting.r) as rrbiavg
+							FROM baseball.batting
+							WHERE baseball.batting.yearid >= ${minYear}
+							AND baseball.batting.yearid <= ${maxYear}
+							GROUP BY idavg)
+						 as statavg
+					ON fullnames.idall = statavg.idavg
+
+					JOIN primary_position
+				 ON statavg.idavg = primary_position.playerid
+		   WHERE primary_position.pos = ${pos}
+			AND statavg.abavg > 350
+				GROUP BY fullnames.namefirst, fullnames.namelast, primary_position.pos, statavg.abavg, 	statavg.rrbiavg, statavg.idavg
+				ORDER BY statavg.rrbiavg DESC
 				LIMIT ${limit};

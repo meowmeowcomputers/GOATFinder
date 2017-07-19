@@ -5,7 +5,7 @@
   h1 {
     font-size: 2vw !important;
   }
-  h3 {
+  h3, .label  {
     font-size: 1.3vw !important;
   }
   .centerme {
@@ -22,7 +22,11 @@
   <div class="column">
   </div>  <div class="column is-two-thirds centerme">
 <h1 class="is-large">The Greatest Baseball Players of {{minYear}} to {{maxYear}}<br>
-  {{#if ops}} by OPS (On Base + Slugging) {{/if}}
+  {{#if retainMenu.ops}} by OPS (On Base + Slugging) for the batters {{/if}}
+  {{#if retainMenu.hr}} by DINGERS for the batters{{/if}}
+  {{#if retainMenu.rbi}} by RBI (Runs Batted In) for the batters{{/if}}
+  {{#if retainMenu.rrbi}} by RBI (Runs Batted In) + Runs Scored for the batters{{/if}}
+
 </h1>
     </div>
 <div class="column">
@@ -42,7 +46,11 @@
 
             </div>
             <div class="col s1">
-              {{#if this.hravg}} Homeruns per year: {{this.hravg}} {{/if}}
+              {{#if this.rbiavg}}RBI per year: {{this.rbiavg}} {{/if}}
+              {{#if this.rrbiavg}}RBI plus runs scored per year: {{this.rrbiavg}}{{/if}}
+              {{#if this.rbiavg}}RBI per year: {{this.rbiavg}} {{/if}}
+{{#if this.rrbiavg}}RBI plus runs scored per year: {{this.rrbiavg}}{{/if}}
+{{#if this.hravg}} Homeruns per year: {{this.hravg}} {{/if}}
              {{#if this.ops}} Average OPS:  {{this.ops}} {{/if}}
               <br>
 
@@ -60,7 +68,9 @@
 
           </div>
           <div class="col s1">
-            {{#if this.hravg}} Homeruns per year: {{this.hravg}} {{/if}}
+            {{#if this.rbiavg}}RBI per year: {{this.rbiavg}} {{/if}}
+{{#if this.rrbiavg}}RBI plus runs scored per year: {{this.rrbiavg}}{{/if}}
+{{#if this.hravg}} Homeruns per year: {{this.hravg}} {{/if}}
            {{#if this.ops}} Average OPS:  {{this.ops}} {{/if}}
             <br>
 
@@ -79,7 +89,9 @@
 
           </div>
           <div class="col s1">
-          {{#if this.hravg}} Homeruns per year: {{this.hravg}} {{/if}}
+          {{#if this.rbiavg}}RBI per year: {{this.rbiavg}} {{/if}}
+{{#if this.rrbiavg}}RBI plus runs scored per year: {{this.rrbiavg}}{{/if}}
+{{#if this.hravg}} Homeruns per year: {{this.hravg}} {{/if}}
            {{#if this.ops}} Average OPS:  {{this.ops}} {{/if}}
             <br>
 
@@ -98,7 +110,9 @@
 
           </div>
           <div class="col s1">
-          {{#if this.hravg}} Homeruns per year: {{this.hravg}} {{/if}}
+          {{#if this.rbiavg}}RBI per year: {{this.rbiavg}} {{/if}}
+{{#if this.rrbiavg}}RBI plus runs scored per year: {{this.rrbiavg}}{{/if}}
+{{#if this.hravg}} Homeruns per year: {{this.hravg}} {{/if}}
            {{#if this.ops}} Average OPS:  {{this.ops}} {{/if}}
             <br>
 
@@ -123,7 +137,9 @@
 
           </div>
           <div class="col s1">
-            {{#if this.hravg}} Homeruns per year: {{this.hravg}} {{/if}}
+            {{#if this.rbiavg}}RBI per year: {{this.rbiavg}} {{/if}}
+{{#if this.rrbiavg}}RBI plus runs scored per year: {{this.rrbiavg}}{{/if}}
+{{#if this.hravg}} Homeruns per year: {{this.hravg}} {{/if}}
            {{#if this.ops}} Average OPS:  {{this.ops}} {{/if}}
             <br>
 
@@ -141,7 +157,9 @@
 
           </div>
           <div class="col s1">
-              {{#if this.hravg}} Homeruns per year: {{this.hravg}} {{/if}}
+              {{#if this.rbiavg}}RBI per year: {{this.rbiavg}} {{/if}}
+{{#if this.rrbiavg}}RBI plus runs scored per year: {{this.rrbiavg}}{{/if}}
+{{#if this.hravg}} Homeruns per year: {{this.hravg}} {{/if}}
             {{#if this.ops}} Average OPS:  {{this.ops}} {{/if}}
             <br>
 
@@ -217,8 +235,8 @@
                         <select name="batting">
                           <option value="ops"{{#if retainMenu.ops}}selected{{/if}}>OPS</option>
                           <option value="hr"{{#if retainMenu.hr}}selected{{/if}}>Homers</option>
-                          <option value="rbi">Runs Batted In</option>
-                          <option value="rrbi">Runs scored plus RBI</option>
+                          <option value="rbi"{{#if retainMenu.rbi}}selected{{/if}}>Runs Batted In</option>
+                          <option value="rrbi"{{#if retainMenu.rrbi}}selected{{/if}}>Runs scored plus RBI</option>
                         </select>
                       </div>
                     </div>
