@@ -55,6 +55,14 @@ const spEraQuery = "SELECT CAST(eraavg.avgera as DECIMAL(5,3)), pitcher_names.fn
 
 const spWhipQuery ="SELECT CAST(eraavg.avgera as DECIMAL(5,3)), pitcher_names.fname, pitcher_names.lname, pitcher_names.playerid, eraavg.avgipouts as average_outs_per_year, eraavg.totalwins, CAST(eraavg.avgwhip as DECIMAL(5,3)) FROM pitcher_names JOIN (SELECT avg(pitching.era) as avgera, pitching.playerid as idavg, avg(pitching.ipouts) as avgipouts, sum(pitching.w) as totalwins, avg(pitching.w) as avgwins, avg(pitching.whip) as avgwhip FROM baseball.pitching WHERE pitching.yearid >= ${minYear} AND pitching.yearid <= ${maxYear} GROUP BY idavg) as eraavg ON eraavg.idavg = pitcher_names.playerid WHERE eraavg.avgipouts > ${ipFloor} GROUP BY eraavg.avgera, pitcher_names.fname, pitcher_names.lname, pitcher_names.playerid, average_outs_per_year, eraavg.totalwins, eraavg.avgwhip ORDER BY eraavg.avgwhip ASC LIMIT ${limit};"
 
+const bpSaveQuery ="SELECT CAST(eraavg.avgera as DECIMAL(5,3)), pitcher_names.fname, pitcher_names.lname, pitcher_names.playerid, CAST(eraavg.avgwhip as DECIMAL(5,3)), eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso FROM pitcher_names JOIN (SELECT avg(pitching.era) as avgera, pitching.playerid as idavg, avg(pitching.ipouts) as avgipouts, sum(pitching.sv) as totalsaves, avg(pitching.sv) as avgsaves, avg(pitching.whip) as avgwhip, sum(pitching.so) as totalso FROM baseball.pitching WHERE pitching.yearid >= ${minYear} AND pitching.yearid <= ${maxYear} GROUP BY idavg) as eraavg ON eraavg.idavg = pitcher_names.playerid WHERE eraavg.avgwhip < 2 GROUP BY eraavg.avgera, pitcher_names.fname, pitcher_names.lname, pitcher_names.playerid, eraavg.avgwhip, eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso ORDER BY ROUND(totalsaves, -1) desc, eraavg.avgwhip asc LIMIT 4;"
+
+const bpWhipQuery = "SELECT CAST(eraavg.avgera as DECIMAL(5,3)), pitcher_names.fname, pitcher_names.lname, pitcher_names.playerid, CAST(eraavg.avgwhip as DECIMAL(5,3)), eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso, eraavg.avgwins FROM pitcher_names JOIN (SELECT avg(pitching.era) as avgera, pitching.playerid as idavg, sum(pitching.sv) as totalsaves, avg(pitching.sv) as avgsaves, avg(pitching.whip) as avgwhip, sum(pitching.so) as totalso, avg(pitching.w) as avgwins, sum(pitching.g) as totalgames FROM baseball.pitching WHERE pitching.yearid >= ${minYear} AND pitching.yearid <= ${maxYear} AND pitching.g > 10 GROUP BY idavg) as eraavg ON eraavg.idavg = pitcher_names.playerid WHERE eraavg.avgwhip < 2 AND avgwins < 12 AND totalgames > 100 GROUP BY eraavg.avgera, pitcher_names.fname, pitcher_names.lname, pitcher_names.playerid, eraavg.avgwhip, eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso, eraavg.avgwins ORDER BY eraavg.avgwhip asc LIMIT ${limit};"
+
+const bpEraQuery = "SELECT CAST(eraavg.avgera as DECIMAL(5,3)), pitcher_names.fname, pitcher_names.lname, pitcher_names.playerid, CAST(eraavg.avgwhip as DECIMAL(5,3)), eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso, eraavg.avgwins FROM pitcher_names JOIN (SELECT avg(pitching.era) as avgera, pitching.playerid as idavg, sum(pitching.sv) as totalsaves, avg(pitching.sv) as avgsaves, avg(pitching.whip) as avgwhip, sum(pitching.so) as totalso, avg(pitching.w) as avgwins, sum(pitching.g) as totalgames FROM baseball.pitching WHERE pitching.yearid >= ${minYear} AND pitching.yearid <= ${maxYear} AND pitching.g > 10 GROUP BY idavg) as eraavg ON eraavg.idavg = pitcher_names.playerid WHERE eraavg.avgwhip < 2 AND avgwins < 12 AND totalgames > 100 GROUP BY eraavg.avgera, pitcher_names.fname, pitcher_names.lname, pitcher_names.playerid, eraavg.avgwhip, eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso, eraavg.avgwins ORDER BY eraavg.avgera asc LIMIT ${limit};"
+
+const bpSoipQuery = "SELECT pitcher_names.fname, pitcher_names.lname, pitcher_names.playerid, CAST(eraavg.avgwhip as DECIMAL(5,3)), eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso, eraavg.avgwins, CAST(eraavg.soperip as DECIMAL(5,3)) FROM pitcher_names JOIN (SELECT sum(pitching.so)/sum(pitching.real_ip) as soperip, pitching.playerid as idavg, sum(pitching.sv) as totalsaves, avg(pitching.sv) as avgsaves, avg(pitching.whip) as avgwhip, sum(pitching.so) as totalso, avg(pitching.w) as avgwins, sum(pitching.g) as totalgames FROM baseball.pitching WHERE pitching.yearid >= ${minYear} AND pitching.yearid <= ${maxYear} AND pitching.g > 10 GROUP BY idavg) as eraavg ON eraavg.idavg = pitcher_names.playerid WHERE eraavg.avgwhip < 2 AND avgwins <10 AND totalgames > 30 AND totalso > 100 GROUP BY pitcher_names.fname, pitcher_names.lname, pitcher_names.playerid, eraavg.avgwhip, eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso, eraavg.avgwins,eraavg.soperip ORDER BY eraavg.soperip desc LIMIT ${limit};"
+
 app.post('/submit', function (req, resp) {
   // console.log('Minimum year: '+req.body.min_slider)
   // console.log('Maximum year: '+req.body.max_slider)
@@ -66,7 +74,24 @@ app.post('/submit', function (req, resp) {
   var allResults = []
   var retainMenu = {}
 
-  console.log("Batter weight property: "+req.body.batting)
+  if (req.body.bullpen == 'bp_sv'){
+    bullpenQuery = bpSaveQuery;
+    retainMenu.bp_sv = 1;
+  }
+  else if(req.body.bullpen== 'bp_era'){
+    bullpenQuery = bpEraQuery
+    retainMenu.bp_era = 1;
+  }
+  else if(req.body.bullpen == 'bp_soip'){
+    bullpenQuery = bpSoipQuery;
+    retainMenu.bp_soip = 1;
+  }
+  else if(req.body.bullpen == 'bp_whip'){
+    bullpenQuery = bpWhipQuery;
+    retainMenu.bp_whip = 1;
+  }
+
+  // console.log("Batter weight property: "+req.body.batting)
   // Check which batting weight the user selected
   if (req.body.batting == 'ops'){
       posQuery = opsQuery;
@@ -162,13 +187,13 @@ app.post('/submit', function (req, resp) {
     })
   //bullpen
     .then(function(pitchConstraints){
-      return db.query(`SELECT CAST(eraavg.avgera as DECIMAL(5,3)), pitcher_names.fname, pitcher_names.lname, pitcher_names.playerid, CAST(eraavg.avgwhip as DECIMAL(5,3)), eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso FROM pitcher_names JOIN (SELECT avg(pitching.era) as avgera, pitching.playerid as idavg, avg(pitching.ipouts) as avgipouts, sum(pitching.sv) as totalsaves, avg(pitching.sv) as avgsaves, avg(pitching.whip) as avgwhip, sum(pitching.so) as totalso FROM baseball.pitching WHERE pitching.yearid >= ${minYear} AND pitching.yearid <= ${maxYear} GROUP BY idavg) as eraavg ON eraavg.idavg = pitcher_names.playerid WHERE eraavg.avgwhip < 2 GROUP BY eraavg.avgera, pitcher_names.fname, pitcher_names.lname, pitcher_names.playerid, eraavg.avgwhip, eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso ORDER BY ROUND(totalsaves, -1) desc, eraavg.avgwhip asc LIMIT 4;`)
+      return db.query(bullpenQuery, {minYear: minYear, maxYear: maxYear, limit:5})
     })
     .then(function(results) {
         allResults.push(results)
     })
     .then(function(){
-      resp.render('results.hbs', {
+      resp.render('results.hbs',{
         outfield: allResults[0],
         firstbase:allResults[1],
         secondbase: allResults[2],

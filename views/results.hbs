@@ -21,15 +21,20 @@
 <div class="columns">
   <div class="column">
   </div>  <div class="column is-two-thirds centerme">
-<h1 class="is-large">The Greatest Baseball Players of {{minYear}} to {{maxYear}}<br>
-  {{#if retainMenu.ops}} by OPS (On Base + Slugging) for the batters <br>{{/if}}
-  {{#if retainMenu.hr}} by DINGERS for the batters<br>{{/if}}
-  {{#if retainMenu.rbi}} by RBI (Runs Batted In) for the batters<br>{{/if}}
-  {{#if retainMenu.rrbi}} by RBI (Runs Batted In) + Runs Scored for the batters<br>{{/if}}
-  {{#if retainMenu.sp_whip}} by WHIP (Fewest Walks and Hits per Inning Pitched) for starting pitchers<br>{{/if}}
-  {{#if retainMenu.sp_era}} by ERA (Runs per 9 innings) for starting pitchers<br>{{/if}}
-  {{#if retainMenu.sp_wins}} by total wins on record for starting pitchers<br>{{/if}}
-</h1>
+<h1 class="is-large">The Greatest Baseball Players of {{minYear}} to {{maxYear}} by<br></h1>
+<h2>
+  {{#if retainMenu.ops}}OPS (On Base + Slugging) for batters <br>{{/if}}
+  {{#if retainMenu.hr}}DINGERS for batters<br>{{/if}}
+  {{#if retainMenu.rbi}}RBI (Runs Batted In) for the batters<br>{{/if}}
+  {{#if retainMenu.rrbi}}RBI (Runs Batted In) + Runs Scored for batters<br>{{/if}}
+  {{#if retainMenu.sp_whip}}WHIP (Fewest Walks and Hits per Inning Pitched) for starting pitchers<br>{{/if}}
+  {{#if retainMenu.sp_era}}ERA (Runs per 9 innings) for starting pitchers<br>{{/if}}
+  {{#if retainMenu.sp_wins}}Total wins on record for starting pitchers<br>{{/if}}
+  {{#if retainMenu.bp_sv}}Total Saves for bullpen pitchers{{/if}}
+  {{#if retainMenu.bp_whip}}WHIP (Fewest Walks and Hits per Inning Pitched) for bullpen pitchers, more than 30 games{{/if}}
+  {{#if retainMenu.bp_era}}ERA (Runs per 9 innings) for bullpen pitchers, more than 30 games{{/if}}
+  {{#if retainMenu.bp_soip}}Strikeouts per inning for bullpen pitchers, more than 30 games, and more than 100 strikeouts{{/if}}
+</h2>
     </div>
 <div class="column">
 </div>
@@ -201,7 +206,9 @@
     <div class="col s1">
       Average WHIP: {{this.avgwhip}}
       <br>
-      Average ERA: {{this.avgera}}
+      {{#if this.avgera}}Average ERA: {{this.avgera}}{{/if}}
+      {{#if this.soperip}}Strikeouts per inning {{this.soperip}}{{/if}}
+
       <br>
       Saves over this period: {{this.totalsaves}}
 
@@ -260,10 +267,10 @@
                     <div class="control">
                       <div class="select">
                         <select name="bullpen">
-                          <option value="bp_sv">Saves</option>
-                          <option value="bp_whip">Walks/Hits per Inning Pitched</option>
-                          <option value="bp_era">Earned Run Average</option>
-                          <option value="bp_soip">Strikeouts Per Inning</option>
+                          <option value="bp_sv"{{#if retainMenu.bp_sv}}selected{{/if}}>Saves</option>
+                          <option value="bp_whip"{{#if retainMenu.bp_whip}}selected{{/if}}>Walks/Hits per Inning Pitched</option>
+                          <option value="bp_era"{{#if retainMenu.bp_era}}selected{{/if}}>Earned Run Average</option>
+                          <option value="bp_soip"{{#if retainMenu.bp_soip}}selected{{/if}}>Strikeouts Per Inning</option>
                         </select>
                       </div>
                     </div>

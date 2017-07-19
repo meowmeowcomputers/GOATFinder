@@ -128,7 +128,7 @@ SELECT CAST(eraavg.avgera as DECIMAL(5,3)), pitcher_names.fname, pitcher_names.l
 --Generate the ipouts/wins threshhold by year for starters
 SELECT avg(w) as avgwins, avg(ipouts) as avgipouts FROM baseball.pitching WHERE ipouts > 486 AND pitching.yearid >= 2000 AND pitching.yearid <= 2016;
 
---Query to find bullpen
+--Query to find bullpen by saves
 SELECT CAST(eraavg.avgera as DECIMAL(5,3)), pitcher_names.fname, pitcher_names.lname,
   pitcher_names.playerid, CAST(eraavg.avgwhip as DECIMAL(5,3)),
   eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso
@@ -183,4 +183,122 @@ SELECT CAST(eraavg.avgera as DECIMAL(5,3)), pitcher_names.fname, pitcher_names.l
     ORDER BY ROUND(totalsaves, -1) desc, eraavg.avgwhip asc
     LIMIT 5;
 
---Starting pitchers by
+--Bullpen players by WHIP
+SELECT CAST(eraavg.avgera as DECIMAL(5,3)), pitcher_names.fname, pitcher_names.lname,
+  pitcher_names.playerid, CAST(eraavg.avgwhip as DECIMAL(5,3)),
+  eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso, eraavg.avgwins
+  FROM
+    pitcher_names
+  JOIN
+  (SELECT
+    avg(pitching.era) as avgera,
+    pitching.playerid as idavg,
+	sum(pitching.sv) as totalsaves,
+	avg(pitching.sv) as avgsaves,
+    avg(pitching.whip) as avgwhip,
+    sum(pitching.so) as totalso,
+    avg(pitching.w) as avgwins,
+    sum(pitching.g) as totalgames
+    FROM baseball.pitching
+    WHERE pitching.yearid >= 1871
+    AND pitching.yearid <= 2016
+    AND pitching.g > 10
+    GROUP BY idavg) as eraavg
+  ON eraavg.idavg = pitcher_names.playerid
+	WHERE eraavg.avgwhip < 2
+	AND avgwins <12
+	AND totalgames > 100
+  GROUP BY eraavg.avgera, pitcher_names.fname, pitcher_names.lname,
+    pitcher_names.playerid, eraavg.avgwhip, eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso, eraavg.avgwins
+
+  ORDER BY eraavg.avgwhip asc
+  LIMIT 5;
+--Same query with parameters
+SELECT CAST(eraavg.avgera as DECIMAL(5,3)), pitcher_names.fname, pitcher_names.lname,
+  pitcher_names.playerid, CAST(eraavg.avgwhip as DECIMAL(5,3)),
+  eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso, eraavg.avgwins
+  FROM
+    pitcher_names
+  JOIN
+  (SELECT
+    avg(pitching.era) as avgera,
+    pitching.playerid as idavg,
+	sum(pitching.sv) as totalsaves,
+	avg(pitching.sv) as avgsaves,
+    avg(pitching.whip) as avgwhip,
+    sum(pitching.so) as totalso,
+    avg(pitching.w) as avgwins,
+    sum(pitching.g) as totalgames
+    FROM baseball.pitching
+    WHERE pitching.yearid >= ${minYear}
+    AND pitching.yearid <= ${maxYear}
+    AND pitching.g > 10
+    GROUP BY idavg) as eraavg
+  ON eraavg.idavg = pitcher_names.playerid
+	WHERE eraavg.avgwhip < 2
+	AND avgwins < 12
+	AND totalgames > 100
+  GROUP BY eraavg.avgera, pitcher_names.fname, pitcher_names.lname,
+    pitcher_names.playerid, eraavg.avgwhip, eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso, eraavg.avgwins
+  ORDER BY eraavg.avgwhip asc
+  LIMIT ${limit};
+  --Bullpen ERA with parameters
+  SELECT CAST(eraavg.avgera as DECIMAL(5,3)), pitcher_names.fname, pitcher_names.lname,
+    pitcher_names.playerid, CAST(eraavg.avgwhip as DECIMAL(5,3)),
+    eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso, eraavg.avgwins
+    FROM
+      pitcher_names
+    JOIN
+    (SELECT
+      avg(pitching.era) as avgera,
+      pitching.playerid as idavg,
+  	sum(pitching.sv) as totalsaves,
+  	avg(pitching.sv) as avgsaves,
+      avg(pitching.whip) as avgwhip,
+      sum(pitching.so) as totalso,
+      avg(pitching.w) as avgwins,
+      sum(pitching.g) as totalgames
+      FROM baseball.pitching
+      WHERE pitching.yearid >= ${minYear}
+      AND pitching.yearid <= ${maxYear}
+      AND pitching.g > 10
+      GROUP BY idavg) as eraavg
+    ON eraavg.idavg = pitcher_names.playerid
+  	WHERE eraavg.avgwhip < 2
+  	AND avgwins < 12
+  	AND totalgames > 100
+    GROUP BY eraavg.avgera, pitcher_names.fname, pitcher_names.lname,
+      pitcher_names.playerid, eraavg.avgwhip, eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso, eraavg.avgwins
+    ORDER BY eraavg.avgera asc
+    LIMIT ${limit};
+--Bullpen by K/innings, over 100 K
+SELECT pitcher_names.fname, pitcher_names.lname,
+  pitcher_names.playerid, CAST(eraavg.avgwhip as DECIMAL(5,3)),
+  eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso, eraavg.avgwins, eraavg.soperip
+  FROM
+    pitcher_names
+  JOIN
+  (SELECT
+    sum(pitching.so)/sum(pitching.real_ip) as soperip,
+    pitching.playerid as idavg,
+	sum(pitching.sv) as totalsaves,
+	avg(pitching.sv) as avgsaves,
+    avg(pitching.whip) as avgwhip,
+    sum(pitching.so) as totalso,
+    avg(pitching.w) as avgwins,
+    sum(pitching.g) as totalgames
+    FROM baseball.pitching
+    WHERE pitching.yearid >= ${minYear}
+    AND pitching.yearid <= ${maxYear}
+    AND pitching.g > 10
+    GROUP BY idavg) as eraavg
+  ON eraavg.idavg = pitcher_names.playerid
+	WHERE eraavg.avgwhip < 2
+	AND avgwins <10
+	AND totalgames > 30
+	AND totalso > 100
+  GROUP BY pitcher_names.fname, pitcher_names.lname,
+    pitcher_names.playerid, eraavg.avgwhip, eraavg.totalsaves, eraavg.avgsaves, eraavg.totalso, eraavg.avgwins,eraavg.soperip
+
+  ORDER BY eraavg.soperip desc
+  LIMIT ${limit};
