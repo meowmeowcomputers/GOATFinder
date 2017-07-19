@@ -23,40 +23,82 @@
   </div>
   <div class="column"></div>
 </div>
-<br><br>
-<div class="columns">
-  <div class="column"></div>
-  <div class="column is-two-thirds">
+<form action="/submit" method="POST">
 
-  <form action="/submit" method="POST">
-                <div class="example">
-            <div id="html5"></div>
+<div class="columns">
+<!-- Left border columns for slider -->
+  <div class="column"></div>
+
+  <div class="column">Min Year
+  <select id="input-select" name="min_slider" class="select is-large"></select></div>
+  <!-- Slider column -->
+  <div class="column is-two-thirds">
+                  <div class="example">
+              <div id="html5"></div>
+                  </div>
+              <div class="columns">
+                <div class="column">
+
+                  </div>
+                  <div class="column"><div class="field">
+                    <label class="label">Batting stat weight for position players</label>
+                    <div class="control">
+                      <div class="select">
+                        <select name="batting">
+                          <option value="ops"{{#if retainMenu.ops}}selected{{/if}}>OPS</option>
+                          <option value="hr"{{#if retainMenu.hr}}selected{{/if}}>Homers</option>
+                          <option value="rbi"{{#if retainMenu.rbi}}selected{{/if}}>Runs Batted In</option>
+                          <option value="rrbi"{{#if retainMenu.rrbi}}selected{{/if}}>Runs scored plus RBI</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div></div>
+                <div class="column"><div class="field">
+                    <label class="label">Pitching stat weight for starting pitchers</label>
+                    <div class="control">
+                      <div class="select">
+                        <select name="starters">
+                          <option value="sp_whip">Walks/Hits per Inning Pitched</option>
+                          <option value="sp_era">Earned Run Average</option>
+                          <option value="sp_wins">Wins</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div></div>
+                <div class="column"> <div class="field">
+                    <label class="label">Pitching stat weight for bullpen</label>
+                    <div class="control">
+                      <div class="select">
+                        <select name="bullpen">
+                          <option value="bp_sv">Saves</option>
+                          <option value="bp_whip">Walks/Hits per Inning Pitched</option>
+                          <option value="bp_era">Earned Run Average</option>
+                          <option value="bp_soip">Strikeouts Per Inning</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div></div>
+                  <div class="column"></div>
+                <div class="column">
+
                 </div>
-            <div class="columns">
-              <div class="column">
-              Minimum Year<br>
-              <select id="input-select" name="min_slider" class="select is-large"></select>
-                </div>
-              <div class="column"></div>
-              <div class="column"></div>
-              <div class="column"></div>
-              <div class="column" style="text-align:right">
-              Maximum Year<br>
-              <select id="input-select-max" name="max_slider" class="select is-large"></select>
               </div>
-            </div>
-    <div class="columns">
-      <div class="column is-one-third"></div>
-        <div class="column is-one-third" style="text-align:center">
-      <button type="submit" class="button is-large">Submit</button>
+      <div class="columns">
+        <div class="column is-one-third"></div>
+          <div class="column is-one-third" style="text-align:center">
+        <button type="submit" class="button is-large">Submit</button>
+        </div>
+        <div class="column is-one-third"></div>
       </div>
-      <div class="column is-one-third"></div>
-    </div>
-  </form>
 
   </div>
+  <!-- Right border columns for slider -->
+  <div class="column">Max Year
+  <select id="input-select-max" name="max_slider" class="select is-large"></select></div>
   <div class="column"></div>
 </div>
+</form>
+
     <script>
     var select = document.getElementById('input-select');
     var select_max = document.getElementById('input-select-max');
