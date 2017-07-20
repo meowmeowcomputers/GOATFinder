@@ -6,12 +6,27 @@
   h1 {
     font-size: 2vw !important;
   }
-  h3 {
+  h3, .label  {
     font-size: 1.3vw !important;
   }
   .centerme {
     text-align: center;
   }
+  .col, .select {
+    font-size: 1.1vw !important;
+  }
+  .input-hidden {
+  position: absolute;
+  left: -9999px;
+}
+  input[type=radio]:checked + label>img {
+    border: 1px solid #fff;
+    box-shadow: 0 0 3px 3px #3297ac;
+  }
+  input[type=radio]:checked + label>img {
+    transform:
+    border: 20px
+    }
   </style>
 </head>
 <script src="/static/js/nouislider.js"></script>
@@ -59,9 +74,9 @@
                     <div class="control">
                       <div class="select">
                         <select name="starters">
-                          <option value="sp_whip">Walks/Hits per Inning Pitched</option>
-                          <option value="sp_era">Earned Run Average</option>
-                          <option value="sp_wins">Wins</option>
+                          <option value="sp_whip"{{#if retainMenu.sp_whip}}selected{{/if}}>Walks/Hits per Inning Pitched</option>
+                          <option value="sp_era"{{#if retainMenu.sp_era}}selected{{/if}}>Earned Run Average</option>
+                          <option value="sp_wins"{{#if retainMenu.sp_wins}}selected{{/if}}>Wins</option>
                         </select>
                       </div>
                     </div>
@@ -71,10 +86,10 @@
                     <div class="control">
                       <div class="select">
                         <select name="bullpen">
-                          <option value="bp_sv">Saves</option>
-                          <option value="bp_whip">Walks/Hits per Inning Pitched</option>
-                          <option value="bp_era">Earned Run Average</option>
-                          <option value="bp_soip">Strikeouts Per Inning</option>
+                          <option value="bp_sv"{{#if retainMenu.bp_sv}}selected{{/if}}>Saves</option>
+                          <option value="bp_whip"{{#if retainMenu.bp_whip}}selected{{/if}}>Walks/Hits per Inning Pitched</option>
+                          <option value="bp_era"{{#if retainMenu.bp_era}}selected{{/if}}>Earned Run Average</option>
+                          <option value="bp_soip"{{#if retainMenu.bp_soip}}selected{{/if}}>Strikeouts Per Inning</option>
                         </select>
                       </div>
                     </div>
@@ -87,7 +102,14 @@
       <div class="columns">
         <div class="column is-one-third"></div>
           <div class="column is-one-third" style="text-align:center">
-        <button type="submit" class="button is-large">Submit</button>
+        <button type="submit" class="button is-large">Submit</button><br><br>
+        <h2>Select image of the team or all of MLB below to filter by team (existing teams only... for now)</h2>
+        <input
+          type="radio" name="league_team"
+          id="mlb" class="input-hidden" value=""/>
+          <label for="mlb">All MLB<br>
+            <img src="static/img/mlb.png" alt="MLB" />
+          </label>
         </div>
         <div class="column is-one-third"></div>
       </div>
@@ -96,6 +118,344 @@
   <!-- Right border columns for slider -->
   <div class="column">Max Year
   <select id="input-select-max" name="max_slider" class="select is-large"></select></div>
+  <div class="column"></div>
+</div>
+<div class="columns">
+    <div class="column centerme"><input
+      <input
+        type="radio" name="league_team"
+        id="" class="input-hidden" value="al"/>
+        <label for="al">American League<br>
+          <img src="static/img/al.gif" alt="American League" />
+        </label>
+    </div>
+
+
+    <div class="column centerme"><input
+      <input
+        type="radio" name="league_team"
+        id="" class="input-hidden" value="nl"/>
+        <label for="nl">National League<br>
+          <img src="static/img/nl.gif" alt="National League" />
+        </label>
+    </div>
+</div>
+<div class="columns">
+  <!-- American League Teams -->
+  <div class="column">
+    <!-- Team row 1 -->
+    <div class="columns">
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="astros" class="input-hidden" value="HOU" {{#if retainMenu.HOU}}checked="checked"{{/if}}/>
+          <label for="astros">
+            Houston Astros<br>
+            <img src="static/img/astros.gif" alt="Astros" />
+          </label>
+      </div>
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="orioles" class="input-hidden" value="BAL"{{#if retainMenu.BAL}}checked="checked"{{/if}}/>
+          <label for="orioles">
+            Baltimore Orioles<br>
+            <img src="static/img/orioles.gif" alt="Orioles" />
+          </label>
+      </div>
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="redsox" class="input-hidden" value="BOS"{{#if retainMenu.BOS}}checked="checked"{{/if}}/>
+          <label for="redsox">
+            Boston Red Sox<br>
+            <img src="static/img/redsox.gif" alt="Red Sox" />
+          </label>
+      </div>
+    </div>
+    <!-- Team row 2 -->
+    <div class="columns">
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="whitesox" class="input-hidden" value="CHA"{{#if retainMenu.CHA}}checked="checked"{{/if}}/>
+          <label for="whitesox">
+            Chicago White Sox<br>
+            <img src="static/img/whitesox.gif" alt="White Sox" />
+          </label>
+      </div>
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="indians" class="input-hidden" value="CLE" {{#if retainMenu.CLE}}checked="checked"{{/if}}/>
+          <label for="indians">
+            Cleveland Indians<br>
+            <img src="static/img/indians.gif" alt="Indians" />
+          </label>
+      </div>
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="tigers" class="input-hidden" value="DET" {{#if retainMenu.DET}}checked="checked"{{/if}}/>
+          <label for="tigers">
+            Detroit Tigers<br>
+            <img src="static/img/tigers.gif" alt="Tigers" />
+          </label>
+      </div>
+    </div>
+    <!-- Team row 3 -->
+    <div class="columns">
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="royals" class="input-hidden" value="KCA" {{#if retainMenu.KCA}}checked="checked"{{/if}}/>
+          <label for="royals">
+            Kansas City Royals<br>
+            <img src="static/img/royals.gif" alt="Royals" />
+          </label>
+      </div>
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="angels" class="input-hidden" value="LAA" {{#if retainMenu.LAA}}checked="checked"{{/if}}/>
+          <label for="angels">
+            Los Angeles Angels
+            <img src="static/img/angels.gif" alt="Angels" />
+          </label>
+      </div>
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="twins" class="input-hidden" value="MIN" {{#if retainMenu.MIN}}checked="checked"{{/if}}/>
+          <label for="twins">
+            Minnesota Twins
+            <img src="static/img/twins.gif" alt="Twins" />
+          </label>
+      </div>
+    </div>
+    <!-- Team row 4 -->
+    <div class="columns">
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="yankees" class="input-hidden" value="NYA" {{#if retainMenu.NYA}}checked="checked"{{/if}}/>
+          <label for="yankees">
+            New York Yankees<br>
+            <img src="static/img/yankees.gif" alt="Yankees" />
+          </label>
+      </div>
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="athletics" class="input-hidden" value="OAK" {{#if retainMenu.OAK}}checked="checked"{{/if}}/>
+          <label for="athletics">
+            Oakland Athletics<br>
+            <img src="static/img/athletics.gif" alt="Athletics" />
+          </label>
+      </div>
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="mariners" class="input-hidden" value="SEA" {{#if retainMenu.SEA}}checked="checked"{{/if}}/>
+          <label for="mariners">
+            Seattle Mariners
+            <img src="static/img/mariners.gif" alt="Mariners" />
+          </label>
+      </div>
+    </div>
+    <!-- Team row 5 -->
+    <div class="columns">
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="rays" class="input-hidden" value="TBA" {{#if retainMenu.TBA}}checked="checked"{{/if}}/>
+          <label for="rays">
+            Tampa Bay Rays
+            <img src="static/img/rays.gif" alt="Rays" />
+          </label>
+      </div>
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="rangers" class="input-hidden" value="TEX" {{#if retainMenu.TEX}}checked="checked"{{/if}}/>
+          <label for="rangers">
+            Texas Rangers
+            <img src="static/img/rangers.gif" alt="Rangers" />
+          </label>
+      </div>
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="bluejays" class="input-hidden" value="TOR" {{#if retainMenu.TOR}}checked="checked"{{/if}}/>
+          <label for="bluejays">
+            Toronto Blue Jays
+            <img src="static/img/bluejays.gif" alt="Blue Jays" />
+          </label>
+      </div>
+    </div>
+
+  </div>
+  <!-- National League placeholder -->
+  <div class="column">
+      <!-- Team row 1 -->
+      <div class="columns">
+        <div class="column centerme"><input
+          <input
+            type="radio" name="league_team"
+            id="diamondbacks" class="input-hidden" value="ARI" {{#if retainMenu.ARI}}checked="checked"{{/if}}/>
+            <label for="diamondbacks">
+              Arizona Dbacks<br>
+              <img src="static/img/diamondbacks.gif" alt="Diamondbacks" />
+            </label>
+        </div>
+        <div class="column centerme"><input
+          <input
+            type="radio" name="league_team"
+            id="braves" class="input-hidden" value="ATL"{{#if retainMenu.ATL}}checked="checked"{{/if}}/>
+            <label for="braves">
+              Atlanta Braves<br>
+              <img src="static/img/braves.gif" alt="Braves" />
+            </label>
+        </div>
+        <div class="column centerme"><input
+          <input
+            type="radio" name="league_team"
+            id="cubs" class="input-hidden" value="CHN"{{#if retainMenu.CHN}}checked="checked"{{/if}}/>
+            <label for="cubs">
+              Chicago Cubs<br>
+              <img src="static/img/cubs.gif" alt="cubs" />
+            </label>
+        </div>
+      </div>
+      <!-- Team row 2 -->
+      <div class="columns">
+        <div class="column centerme"><input
+          <input
+            type="radio" name="league_team"
+            id="reds" class="input-hidden" value="CIN"{{#if retainMenu.CIN}}checked="checked"{{/if}}/>
+            <label for="reds">
+              Cincinnati Reds<br>
+              <img src="static/img/reds.gif" alt="reds" />
+            </label>
+        </div>
+        <div class="column centerme"><input
+          <input
+            type="radio" name="league_team"
+            id="rockies" class="input-hidden" value="COL" {{#if retainMenu.COL}}checked="checked"{{/if}}/>
+            <label for="rockies">
+              Colorado Rockies<br>
+              <img src="static/img/rockies.gif" alt="rockies" />
+            </label>
+        </div>
+        <div class="column centerme"><input
+          <input
+            type="radio" name="league_team"
+            id="dodgers" class="input-hidden" value="LAN" {{#if retainMenu.LAN}}checked="checked"{{/if}}/>
+            <label for="dodgers">
+              Los Angeles Dodgers<br>
+              <img src="static/img/dodgers.gif" alt="dodgers" />
+            </label>
+        </div>
+      </div>
+      <!-- Team row 3 -->
+      <div class="columns">
+        <div class="column centerme"><input
+          <input
+            type="radio" name="league_team"
+            id="marlins" class="input-hidden" value="MIA" {{#if retainMenu.MIA}}checked="checked"{{/if}}/>
+            <label for="marlins">
+              Miami Marlins<br>
+              <img src="static/img/marlins.gif" alt="marlins" />
+            </label>
+        </div>
+        <div class="column centerme"><input
+          <input
+            type="radio" name="league_team"
+            id="angels" class="input-hidden" value="LAA" {{#if retainMenu.LAA}}checked="checked"{{/if}}/>
+            <label for="angels">
+              Los Angeles Angels
+              <img src="static/img/angels.gif" alt="Angels" />
+            </label>
+        </div>
+        <div class="column centerme"><input
+          <input
+            type="radio" name="league_team"
+            id="brewers" class="input-hidden" value="MIL" {{#if retainMenu.MIL}}checked="checked"{{/if}}/>
+            <label for="brewers">
+              Milwaukee Brewers
+              <img src="static/img/brewers.gif" alt="brewers" />
+            </label>
+        </div>
+      </div>
+      <!-- Team row 4 -->
+      <div class="columns">
+        <div class="column centerme"><input
+          <input
+            type="radio" name="league_team"
+            id="mets" class="input-hidden" value="NYN" {{#if retainMenu.NYN}}checked="checked"{{/if}}/>
+            <label for="mets">
+              New York Mets<br>
+              <img src="static/img/mets.gif" alt="mets" />
+            </label>
+        </div>
+        <div class="column centerme"><input
+          <input
+            type="radio" name="league_team"
+            id="phillies" class="input-hidden" value="PHI" {{#if retainMenu.PHI}}checked="checked"{{/if}}/>
+            <label for="phillies">
+              Philadelphia Phillies<br>
+              <img src="static/img/phillies.gif" alt="phillies" />
+            </label>
+        </div>
+        <div class="column centerme"><input
+          <input
+            type="radio" name="league_team"
+            id="pirates" class="input-hidden" value="PIT" {{#if retainMenu.PIT}}checked="checked"{{/if}}/>
+            <label for="pirates">
+              Pittsburgh Pirates
+              <img src="static/img/pirates.gif" alt="pirates" />
+            </label>
+        </div>
+      </div>
+      <!-- Team row 5 -->
+      <div class="columns">
+        <div class="column centerme"><input
+          <input
+            type="radio" name="league_team"
+            id="giants" class="input-hidden" value="SFN" {{#if retainMenu.SFN}}checked="checked"{{/if}}/>
+            <label for="giants">
+              San Francisco Giants
+              <img src="static/img/giants.gif" alt="giants" />
+            </label>
+        </div>
+        <div class="column centerme"><input
+          <input
+            type="radio" name="league_team"
+            id="cardinals" class="input-hidden" value="SLN" {{#if retainMenu.SLN}}checked="checked"{{/if}}/>
+            <label for="cardinals">
+              St. Louis Cardinals
+              <img src="static/img/cardinals.gif" alt="cardinals" />
+            </label>
+        </div>
+        <div class="column centerme"><input
+          <input
+            type="radio" name="league_team"
+            id="nationals" class="input-hidden" value="WAS" {{#if retainMenu.WAS}}checked="checked"{{/if}}/>
+            <label for="nationals">
+              Washington Nationals
+              <img src="static/img/nationals.gif" alt="nationals" />
+            </label>
+        </div>
+      </div>
+
+  </div>
+
+</div>
+<div class="columns">
+  <div class="column"></div>
+  <div class="column centerme">
+    <button type="submit" class="button is-large">Submit</button>
+  </div>
   <div class="column"></div>
 </div>
 </form>
