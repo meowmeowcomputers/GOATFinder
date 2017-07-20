@@ -14,6 +14,18 @@
   .col, .select {
     font-size: 1.1vw !important;
   }
+  .input-hidden {
+  position: absolute;
+  left: -9999px;
+}
+  input[type=radio]:checked + label>img {
+    border: 1px solid #fff;
+    box-shadow: 0 0 3px 3px #3297ac;
+  }
+  input[type=radio]:checked + label>img {
+    transform:
+    border: 20px
+    }
   </style>
 </head>
 <script src="/static/js/nouislider.js"></script>
@@ -283,7 +295,14 @@
       <div class="columns">
         <div class="column is-one-third"></div>
           <div class="column is-one-third" style="text-align:center">
-        <button type="submit" class="button is-large">Submit</button>
+        <button type="submit" class="button is-large">Submit</button><br><br>
+        <h2>Select image of the team or all of MLB below to filter by team (existing teams only... for now)</h2>
+        <input
+          type="radio" name="league_team"
+          id="mlb" class="input-hidden" value="mlb"/>
+          <label for="mlb">All MLB<br>
+            <img src="static/img/mlb.png" alt="MLB" />
+          </label>
         </div>
         <div class="column is-one-third"></div>
       </div>
@@ -293,6 +312,169 @@
   <div class="column">Max Year
   <select id="input-select-max" name="max_slider" class="select is-large"></select></div>
   <div class="column"></div>
+</div>
+<div class="columns">
+    <div class="column centerme"><input
+      <input
+        type="radio" name="league_team"
+        id="al" class="input-hidden" value="al"/>
+        <label for="al">American League<br>
+          <img src="static/img/al.gif" alt="American League" />
+        </label>
+    </div>
+
+
+    <div class="column centerme"><input
+      <input
+        type="radio" name="league_team"
+        id="nl" class="input-hidden" value="nl"/>
+        <label for="nl">National League<br>
+          <img src="static/img/nl.gif" alt="National League" />
+        </label>
+    </div>
+</div>
+<div class="columns">
+  <div class="column">
+    <!-- Team row 1 -->
+    <div class="columns">
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="astros" class="input-hidden" value="HOU"/>
+          <label for="astros">
+            Houston Astros<br>
+            <img src="static/img/astros.gif" alt="Astros" />
+          </label>
+      </div>
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="al" class="input-hidden" value="al"/>
+          <label for="al">
+            <img src="static/img/al.gif" alt="American League" />
+          </label>
+      </div>
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="al" class="input-hidden" value="al"/>
+          <label for="al">
+            <img src="static/img/al.gif" alt="American League" />
+          </label>
+      </div>
+    </div>
+    <!-- Team row 2 -->
+    <div class="columns">
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="al" class="input-hidden" value="al"/>
+          <label for="al">
+            <img src="static/img/al.gif" alt="American League" />
+          </label>
+      </div>
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="al" class="input-hidden" value="al"/>
+          <label for="al">
+            <img src="static/img/al.gif" alt="American League" />
+          </label>
+      </div>
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="al" class="input-hidden" value="al"/>
+          <label for="al">
+            <img src="static/img/al.gif" alt="American League" />
+          </label>
+      </div>
+    </div>
+    <!-- Team row 3 -->
+    <div class="columns">
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="al" class="input-hidden" value="al"/>
+          <label for="al">
+            <img src="static/img/al.gif" alt="American League" />
+          </label>
+      </div>
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="al" class="input-hidden" value="al"/>
+          <label for="al">
+            <img src="static/img/al.gif" alt="American League" />
+          </label>
+      </div>
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="al" class="input-hidden" value="al"/>
+          <label for="al">
+            <img src="static/img/al.gif" alt="American League" />
+          </label>
+      </div>
+    </div>
+    <!-- Team row 4 -->
+    <div class="columns">
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="al" class="input-hidden" value="al"/>
+          <label for="al">
+            <img src="static/img/al.gif" alt="American League" />
+          </label>
+      </div>
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="al" class="input-hidden" value="al"/>
+          <label for="al">
+            <img src="static/img/al.gif" alt="American League" />
+          </label>
+      </div>
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="al" class="input-hidden" value="al"/>
+          <label for="al">
+            <img src="static/img/al.gif" alt="American League" />
+          </label>
+      </div>
+    </div>
+    <!-- Team row 5 -->
+    <div class="columns">
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="al" class="input-hidden" value="al"/>
+          <label for="al">
+            <img src="static/img/al.gif" alt="American League" />
+          </label>
+      </div>
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="al" class="input-hidden" value="al"/>
+          <label for="al">
+            <img src="static/img/al.gif" alt="American League" />
+          </label>
+      </div>
+      <div class="column centerme"><input
+        <input
+          type="radio" name="league_team"
+          id="al" class="input-hidden" value="al"/>
+          <label for="al">
+            <img src="static/img/al.gif" alt="American League" />
+          </label>
+      </div>
+    </div>
+
+  </div>
+  <div class="column"></div>
+
 </div>
 </form>
 

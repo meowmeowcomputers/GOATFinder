@@ -73,6 +73,7 @@ app.post('/submit', function (req, resp) {
   var maxYear = req.body.max_slider;
   var allResults = []
   var retainMenu = {}
+  var team
 
   if (req.body.bullpen == 'bp_sv'){
     bullpenQuery = bpSaveQuery;
@@ -89,6 +90,14 @@ app.post('/submit', function (req, resp) {
   else if(req.body.bullpen == 'bp_whip'){
     bullpenQuery = bpWhipQuery;
     retainMenu.bp_whip = 1;
+  }
+
+  if(req.body.league_team == 'HOU'){
+    team = "WHERE team"
+  }
+  else
+  {
+
   }
 
   // console.log("Batter weight property: "+req.body.batting)
@@ -134,6 +143,7 @@ app.post('/submit', function (req, resp) {
   db.query(posQuery, {minYear:minYear, maxYear:maxYear, pos:'OF', limit:6})
     .then(function(results) {
       allResults.push(results)
+      console.log(results[0])
     })
   //First Base
     .then(function() {
@@ -205,6 +215,7 @@ app.post('/submit', function (req, resp) {
         minYear: minYear,
         maxYear: maxYear,
         retainMenu: retainMenu,
+
       });
     })
     .catch(function(err){
