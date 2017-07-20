@@ -101,8 +101,7 @@ SELECT fullnames.namefirst, fullnames.namelast, avghr.avghomer
                 fielding.playerid
                FROM baseball.fielding
               GROUP BY fielding.pos, fielding.playerid
-                )
-                AS poslist
+                ) AS poslist
                 LEFT JOIN (  SELECT fielding.pos,
                 sum(fielding.g) AS position_occurence,
                 fielding.playerid
