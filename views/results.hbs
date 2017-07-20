@@ -299,7 +299,7 @@
         <h2>Select image of the team or all of MLB below to filter by team (existing teams only... for now)</h2>
         <input
           type="radio" name="league_team"
-          id="mlb" class="input-hidden" value="mlb"/>
+          id="mlb" class="input-hidden" value=""/>
           <label for="mlb">All MLB<br>
             <img src="static/img/mlb.png" alt="MLB" />
           </label>
@@ -317,7 +317,7 @@
     <div class="column centerme"><input
       <input
         type="radio" name="league_team"
-        id="al" class="input-hidden" value="al"/>
+        id="" class="input-hidden" value="al"/>
         <label for="al">American League<br>
           <img src="static/img/al.gif" alt="American League" />
         </label>
@@ -327,7 +327,7 @@
     <div class="column centerme"><input
       <input
         type="radio" name="league_team"
-        id="nl" class="input-hidden" value="nl"/>
+        id="" class="input-hidden" value="nl"/>
         <label for="nl">National League<br>
           <img src="static/img/nl.gif" alt="National League" />
         </label>
@@ -340,7 +340,7 @@
       <div class="column centerme"><input
         <input
           type="radio" name="league_team"
-          id="astros" class="input-hidden" value="HOU"/>
+          id="astros" class="input-hidden" value="HOU" {{#if retainMenu.HOU}}checked="checked"{{/if}}/>
           <label for="astros">
             Houston Astros<br>
             <img src="static/img/astros.gif" alt="Astros" />
@@ -349,17 +349,19 @@
       <div class="column centerme"><input
         <input
           type="radio" name="league_team"
-          id="al" class="input-hidden" value="al"/>
-          <label for="al">
-            <img src="static/img/al.gif" alt="American League" />
+          id="orioles" class="input-hidden" value="BAL"{{#if retainMenu.BAL}}checked="checked"{{/if}}/>
+          <label for="orioles">
+            Baltimore Orioles<br>
+            <img src="static/img/orioles.gif" alt="Orioles" />
           </label>
       </div>
       <div class="column centerme"><input
         <input
           type="radio" name="league_team"
-          id="al" class="input-hidden" value="al"/>
-          <label for="al">
-            <img src="static/img/al.gif" alt="American League" />
+          id="redsox" class="input-hidden" value="BOS"{{#if retainMenu.BOS}}checked="checked"{{/if}}/>
+          <label for="redsox">
+            Boston Red Sox<br>
+            <img src="static/img/redsox.gif" alt="Red Sox" />
           </label>
       </div>
     </div>
