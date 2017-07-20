@@ -22,7 +22,6 @@ Challenges:
   <ul>
   <li>Datatypes were not as expected (varchar on an integer-only column)</li>
   <li>Teamid was not what I thought it was, and there's a key called franchid that I had to research what the difference was</li>
-  <li>
    </ul>
    <li>Making the query more efficient. Initial query was 4 seconds long. I used combination of indexes and materialized views, as the data was static. I also broke out some of the queries in to separate queries to reduce the number of joins. Aggregator query is now .3 seconds.</li>
    
