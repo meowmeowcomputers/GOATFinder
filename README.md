@@ -26,3 +26,12 @@ Challenges:
    <li>Making the query more efficient. Initial query was 4 seconds long. I used combination of indexes and materialized views, as the data was static. I also broke out some of the queries in to separate queries to reduce the number of joins. Aggregator query is now .3 seconds.</li>
    
 </ul>
+
+Technologies used:
+ <ul>
+ <li>MySQL</li>
+ <li>PostgreSQL</li>
+ <li>Express</li>
+ <li>Node.js</li>
+ <li>Bulma</li>
+ </ul>
